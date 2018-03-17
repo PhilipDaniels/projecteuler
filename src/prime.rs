@@ -1,3 +1,9 @@
+pub fn sqrt_ceil(n : u64) -> u64
+{
+    let upper_limit = (n as f64).sqrt() as u64 + 1;
+    upper_limit
+}
+
 /// An iterator that yields prime numbers.
 /// The values start: 2, 3, 5, 7, 11, 13, 17, 19, ...
 pub struct PrimeIterator {
@@ -49,10 +55,4 @@ fn is_prime(known_primes: &Vec<u64>, n: u64) -> bool {
     }
 
     true
-}
-
-fn sqrt_ceil(n : u64) -> u64
-{
-    let upper_limit = (n as f64).sqrt() as u64 + 1;
-    upper_limit
 }

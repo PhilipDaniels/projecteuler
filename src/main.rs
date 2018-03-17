@@ -2,7 +2,7 @@ mod fibonacci;
 mod prime;
 
 use fibonacci::FibonacciIterator;
-use prime::PrimeIterator;
+use prime::*;
 
 fn p001() {
     let answer = (0..1000)
@@ -23,9 +23,14 @@ fn p002() {
 }
 
 fn p003() {
-    for (idx, p) in PrimeIterator::new().take(25).enumerate() {
-        println!("prime({}) = {}", idx, p);
-    }
+    let input = 600851475143;
+    let limit = prime::sqrt_ceil(input);
+    let primes = PrimeIterator::new()
+        .take_while(|&p| p < limit)
+        .collect::<Vec<u64>>();
+
+    let answer = primes.iter().rev().skip_while(|&p| input % p != 0).next().unwrap();
+    println!("p003 answer = {:?}", answer);
 }
 
 fn main() {
