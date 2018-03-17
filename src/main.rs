@@ -23,13 +23,9 @@ fn p002() {
 }
 
 fn p003() {
-    let p = PrimeIterator::new().skip(100000).next().unwrap();
-    println!("prime(10000) = {}", p);
-
-//    for (idx, p) in PrimeIterator::new().take(25).enumerate() {
-//        //println!("prime({}) = {}", idx, p);
-//
-//    }
+    for (idx, p) in PrimeIterator::new().take(25).enumerate() {
+        println!("prime({}) = {}", idx, p);
+    }
 }
 
 fn main() {

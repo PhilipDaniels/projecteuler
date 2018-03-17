@@ -37,8 +37,7 @@ impl Iterator for PrimeIterator {
 }
 
 fn is_prime(known_primes: &Vec<u64>, n: u64) -> bool {
-    let upper_limit = (n as f64).sqrt() as u64 + 1;
-    //println!("   n = {}, upper_limit = {}", n, upper_limit);
+    let upper_limit = sqrt_ceil(n);
 
     for &p in known_primes {
         if p >= upper_limit {
@@ -52,3 +51,8 @@ fn is_prime(known_primes: &Vec<u64>, n: u64) -> bool {
     true
 }
 
+fn sqrt_ceil(n : u64) -> u64
+{
+    let upper_limit = (n as f64).sqrt() as u64 + 1;
+    upper_limit
+}
