@@ -1,4 +1,12 @@
 use utils::*;
+use std::ops::Range;
+
+pub fn primes_in_range(r: Range<u64>) -> Vec<u64> {
+    PrimeIterator::new()
+        .skip_while(|&p| p < r.start)
+        .take_while(|&p| p < r.end)
+        .collect()
+}
 
 /// An iterator that yields prime numbers.
 /// The values start: 2, 3, 5, 7, 11, 13, 17, 19, ...
@@ -51,4 +59,24 @@ fn is_prime(known_primes: &Vec<u64>, n: u64) -> bool {
     }
 
     true
+}
+
+#[cfg(test)]
+mod tests {
+    use super::primes_in_range;
+
+    #[test]
+    fn primes_in_range_for_empty_range_returns_empty_vec() {
+        assert_eq!(primes_in_range(5..5), Vec::new());
+    }
+
+    #[test]
+    fn primes_in_range_for_start_at_zero_returns_first_primes() {
+        assert_eq!(primes_in_range(0..10), vec![2, 3, 5, 7]);
+    }
+
+    #[test]
+    fn primes_in_range_for_start_at_nonzero_returns_correct_primes() {
+        assert_eq!(primes_in_range(10..20), vec![11, 13, 17, 19]);
+    }
 }
