@@ -21,7 +21,7 @@ fn p002() {
     let answer = FibonacciIterator::new()
         .filter(|&x| x % 2 == 0)
         .take_while(|&x| x < 4_000_000)
-        .sum::<usize>();
+        .sum::<u64>();
 
     println!("p002 answer = {}", answer);
 }
@@ -108,6 +108,9 @@ fn p005b() {
     }
 
     println!("p005b answer = {}", n);
+
+    // TODO: There are still faster ways of computing this.
+    // See https://projecteuler.net/thread=5;page=5
 }
 
 fn main() {

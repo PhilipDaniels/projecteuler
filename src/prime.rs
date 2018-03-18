@@ -1,5 +1,5 @@
-use utils::*;
 use std::ops::Range;
+use utils::*;
 
 pub fn primes_in_range(r: Range<u64>) -> Vec<u64> {
     PrimeIterator::new()
