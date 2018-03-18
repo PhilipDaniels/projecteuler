@@ -1,9 +1,12 @@
+extern crate elapsed;
+
 mod fibonacci;
 mod prime;
 mod utils;
 
 use fibonacci::FibonacciIterator;
 use prime::*;
+use elapsed::measure_time;
 
 fn p001() {
     let answer = (0..1000)
@@ -55,14 +58,13 @@ fn p004() {
     println!("p004 answer = {:?}", largest);
 }
 
-fn p005() {
+fn p005a() {
     // This problem is formally known as "lowest common multiple".
 
     // must be even (* 2)
     // must end in zero (* 10)
     // must divide 20 (increments of 20)
     // however, each candidate must also divide all 1..10, so increments are actually of 2520, not 20.
-    // however, it must also divide all the primes:
 
     // This allows us to skip certain divisors as we know they are implicit
     // from the fact that we are incrementing in 20s. 2520 is divisible by 20.
@@ -71,18 +73,41 @@ fn p005() {
     //    div by 14 implies div by 7
     //    div by 8  implies div by 4 and 2
     let divisors = [8, 11, 12, 13, 14, 15, 16, 17, 18, 19];
-    let divisible_by_all = |x| {
-        divisors.iter().all(|&n| x % n == 0)
-    };
+    let divisible_by_all = |x| divisors.iter().all(|&n| x % n == 0);
 
-    let increment = 2 * 3 * 5 * 7 * 11 * 13 * 17 * 19;
     let mut n = 2520;
-    let increment = 2520; // 2 * 3 * 5 * 7 * 11 * 13 * 17 *19;
+    let increment = 2520;
     while !divisible_by_all(n) {
         n += increment;
     }
 
-    println!("p005 answer = {}", n);
+    println!("p005a answer = {}", n);
+}
+
+fn p005b() {
+    // This problem is formally known as "lowest common multiple".
+
+    // Alternative solution. Must be divisible by a product of all the primes up to 20:
+    //     let increment = 2 * 3 * 5 * 7 * 11 * 13 * 17 * 19;
+    // This is also the starting number, not 2520.
+    // We then know that all candidate numbers will be divisible by all of those factors,
+    // so our list of divisors does not need to include them. Also, we can apply the filtering
+    // described in the previous solution, namely
+    //    div by 20 implies div by 10, 5, 4 and 2.
+    //    div by 18 implies div by 9, 6, 3 and 2
+    //    div by 14 implies div by 7
+    //    div by 8  implies div by 4 and 2
+    // p005a runs in 584.29 μs, and p005b runs in 1.43 μs.
+    let divisors = [14, 15, 16, 18, 20];
+    let divisible_by_all = |x| divisors.iter().all(|&n| x % n == 0);
+
+    let increment = 2 * 3 * 5 * 7 * 11 * 13 * 17 * 19;
+    let mut n = increment;
+    while !divisible_by_all(n) {
+        n += increment;
+    }
+
+    println!("p005b answer = {}", n);
 }
 
 fn main() {
@@ -90,5 +115,8 @@ fn main() {
     p002();
     p003();
     p004();
-    p005();
+    let (elapsed, _) = measure_time(|| p005a());
+    println!("    elapsed for p005a = {}", elapsed);
+    let (elapsed, _) = measure_time(|| p005b());
+    println!("    elapsed for p005b = {}", elapsed);
 }
