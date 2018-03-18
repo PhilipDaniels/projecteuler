@@ -55,9 +55,40 @@ fn p004() {
     println!("p004 answer = {:?}", largest);
 }
 
+fn p005() {
+    // This problem is formally known as "lowest common multiple".
+
+    // must be even (* 2)
+    // must end in zero (* 10)
+    // must divide 20 (increments of 20)
+    // however, each candidate must also divide all 1..10, so increments are actually of 2520, not 20.
+    // however, it must also divide all the primes:
+
+    // This allows us to skip certain divisors as we know they are implicit
+    // from the fact that we are incrementing in 20s. 2520 is divisible by 20.
+    // eg div by 20 implies div by 10, 5, 4 and 2.
+    //    div by 18 implies div by 9, 6, 3 and 2
+    //    div by 14 implies div by 7
+    //    div by 8  implies div by 4 and 2
+    let divisors = [8, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+    let divisible_by_all = |x| {
+        divisors.iter().all(|&n| x % n == 0)
+    };
+
+    let increment = 2 * 3 * 5 * 7 * 11 * 13 * 17 * 19;
+    let mut n = 2520;
+    let increment = 2520; // 2 * 3 * 5 * 7 * 11 * 13 * 17 *19;
+    while !divisible_by_all(n) {
+        n += increment;
+    }
+
+    println!("p005 answer = {}", n);
+}
+
 fn main() {
     p001();
     p002();
     p003();
     p004();
+    p005();
 }
