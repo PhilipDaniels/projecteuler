@@ -1,6 +1,7 @@
 use std::ops::Range;
 use utils::*;
 
+// TODO: Create an "in range" iterator adaptor.
 pub fn primes_in_range(r: Range<u64>) -> Vec<u64> {
     PrimeIterator::new()
         .skip_while(|&p| p < r.start)
