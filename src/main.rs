@@ -8,6 +8,17 @@ use fibonacci::FibonacciIterator;
 use prime::*;
 //use elapsed::measure_time;
 
+fn p000() {
+    println!("Welcome to my Project Euler solutions!");
+    println!("To run, pass one or more numbers on the command line, a range, or *. For example:");
+    println!();
+    println!("    $ projecteuler 2              // Runs problem 2");
+    println!("    $ projecteuler 2 3 4 8        // Runs problems 2, 3, 4 and 8");
+    println!("    $ projecteuler 2..10          // Runs problems 2 to 9");
+    println!("    $ projecteuler *              // Runs all problems");
+    println!();
+}
+
 fn p001() {
     let answer = (0..1000)
         .filter(|&x| x % 3 == 0 || x % 5 == 0)
@@ -118,12 +129,15 @@ fn p005b() {
     // See https://projecteuler.net/thread=5;page=5
 }
 
+static SOLUTIONS: [fn(); 6] = [p000, p001, p002, p003, p004, p005];
+
 fn main() {
-    p001();
-    p002();
-    p003();
-    p004();
-    p005();
+    SOLUTIONS[0]();
+//    p001();
+//    p002();
+//    p003();
+//    p004();
+//    p005();
     //let (elapsed, _) = measure_time(|| p005a());
     //println!("    elapsed for p005a = {}", elapsed);
     //let (elapsed, _) = measure_time(|| p005b());
