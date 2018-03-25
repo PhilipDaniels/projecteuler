@@ -4,10 +4,10 @@ mod fibonacci;
 mod prime;
 mod utils;
 
+use elapsed::measure_time;
 use fibonacci::FibonacciIterator;
 use prime::*;
 use std::collections::HashSet;
-//use elapsed::measure_time;
 
 fn p000() {
     println!("Welcome to my Project Euler solutions!");
@@ -71,8 +71,8 @@ fn p004() {
 }
 
 fn p005() {
-    p005a();
-    p005b();
+    execute(5, p005a);
+    execute(5, p005b);
 }
 
 fn p005a() {
@@ -140,14 +140,15 @@ fn main() {
             println!("Problem {} has not been solved yet! Ignoring.", p);
         }
         else {
-            execute(SOLUTIONS[p]);
+            execute(p,SOLUTIONS[p]);
         }
     }
+}
 
-    //let (elapsed, _) = measure_time(|| p005a());
-    //println!("    elapsed for p005a = {}", elapsed);
-    //let (elapsed, _) = measure_time(|| p005b());
-    //println!("    elapsed for p005b = {}", elapsed);
+fn execute(n: usize, f: fn()) {
+    let (elapsed, _) = measure_time(f);
+    let msg = format!("     p{:03} completed in {}", n, elapsed);
+    println!("{}", msg);
 }
 
 fn parse_arguments() -> Vec<usize> {
@@ -180,8 +181,4 @@ fn parse_arguments() -> Vec<usize> {
     let mut v = args.into_iter().collect::<Vec<_>>();
     v.sort();
     v
-}
-
-fn execute(f: fn()) {
-    f();
 }
