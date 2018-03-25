@@ -6,7 +6,7 @@ mod utils;
 
 use fibonacci::FibonacciIterator;
 use prime::*;
-use elapsed::measure_time;
+//use elapsed::measure_time;
 
 fn p001() {
     let answer = (0..1000)
@@ -27,7 +27,7 @@ fn p002() {
 }
 
 fn p003() {
-    let input = 600851475143;
+    let input = 600_851_475_143;
     let limit = utils::sqrt_ceil(input);
     let primes = PrimeIterator::new()
         .take_while(|&p| p < limit)
@@ -56,6 +56,11 @@ fn p004() {
     }
 
     println!("p004 answer = {:?}", largest);
+}
+
+fn p005() {
+    p005a();
+    p005b();
 }
 
 fn p005a() {
@@ -118,8 +123,9 @@ fn main() {
     p002();
     p003();
     p004();
-    let (elapsed, _) = measure_time(|| p005a());
-    println!("    elapsed for p005a = {}", elapsed);
-    let (elapsed, _) = measure_time(|| p005b());
-    println!("    elapsed for p005b = {}", elapsed);
+    p005();
+    //let (elapsed, _) = measure_time(|| p005a());
+    //println!("    elapsed for p005a = {}", elapsed);
+    //let (elapsed, _) = measure_time(|| p005b());
+    //println!("    elapsed for p005b = {}", elapsed);
 }

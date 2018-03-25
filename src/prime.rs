@@ -43,11 +43,11 @@ impl Iterator for PrimeIterator {
         }
 
         self.primes.push(self.prev);
-        return Some(self.prev);
+        Some(self.prev)
     }
 }
 
-fn is_prime(known_primes: &Vec<u64>, n: u64) -> bool {
+fn is_prime(known_primes: &[u64], n: u64) -> bool {
     let upper_limit = sqrt_ceil(n);
 
     for &p in known_primes {

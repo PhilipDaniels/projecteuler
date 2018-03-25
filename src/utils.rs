@@ -1,3 +1,5 @@
+use std;
+
 /// Compute ceil(sqrt(n)). Useful for setting upper bounds for some
 /// algorithms, for example, computing prime numbers.
 pub fn sqrt_ceil(n: u64) -> u64
@@ -11,12 +13,10 @@ pub fn gcd(mut n: u64, mut m: u64) -> u64 {
 
     while m != 0 {
         if m < n {
-            let t = m;
-            m = n;
-            n = t;
+            std::mem::swap(&mut m, &mut n);
         }
 
-        m = m % n
+        m %= n
     }
 
     n
@@ -31,13 +31,13 @@ pub fn format_number(n: u64) -> Vec<u8> {
 
 /// Check whether a number is a palindrome when converted to a string.
 pub fn is_palindrome(n: u64) -> bool {
-    return is_palindrome_vec(&format_number(n));
+    is_palindrome_vec(&format_number(n))
 }
 
 /// Check whether a vector is a palindrome.
 /// An empty vector is considered to be a palindrome.
-pub fn is_palindrome_vec(s: &Vec<u8>) -> bool {
-    if s.len() == 0 {
+pub fn is_palindrome_vec(s: &[u8]) -> bool {
+    if s.is_empty() {
         return true;
     }
 
