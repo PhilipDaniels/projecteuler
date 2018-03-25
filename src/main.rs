@@ -44,7 +44,7 @@ fn parse_arguments() -> Vec<usize> {
 
     for arg in std::env::args().skip(1) {
         if arg == "all" {
-            args.extend(1..SOLUTIONS.len());
+            args.extend(1..SOLUTIONS.len() + 1);
         }
         else if let Ok(n) = arg.parse::<usize>() {
             args.insert(n);
