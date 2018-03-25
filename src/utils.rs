@@ -1,4 +1,11 @@
 use std;
+use elapsed::measure_time;
+
+pub fn execute(n: usize, f: fn()) {
+    let (elapsed, _) = measure_time(f);
+    let msg = format!("     p{:03} completed in {}", n, elapsed);
+    println!("{}", msg);
+}
 
 /// Compute ceil(sqrt(n)). Useful for setting upper bounds for some
 /// algorithms, for example, computing prime numbers.
