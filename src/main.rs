@@ -6,16 +6,17 @@ mod utils;
 
 use fibonacci::FibonacciIterator;
 use prime::*;
+use std::collections::HashSet;
 //use elapsed::measure_time;
 
 fn p000() {
     println!("Welcome to my Project Euler solutions!");
-    println!("To run, pass one or more numbers on the command line, a range, or *. For example:");
+    println!("To run, pass one or more numbers on the command line, a range, or 'all'. For example:");
     println!();
     println!("    $ projecteuler 2              // Runs problem 2");
     println!("    $ projecteuler 2 3 4 8        // Runs problems 2, 3, 4 and 8");
-    println!("    $ projecteuler 2..10          // Runs problems 2 to 9");
-    println!("    $ projecteuler *              // Runs all problems");
+    println!("    $ projecteuler 2..10          // Runs problems 2 to 10, inclusive");
+    println!("    $ projecteuler all            // Runs all problems");
     println!();
 }
 
@@ -132,14 +133,55 @@ fn p005b() {
 static SOLUTIONS: [fn(); 6] = [p000, p001, p002, p003, p004, p005];
 
 fn main() {
-    SOLUTIONS[0]();
-//    p001();
-//    p002();
-//    p003();
-//    p004();
-//    p005();
+    let problems = parse_arguments();
+
+    for p in problems {
+        if p >= SOLUTIONS.len() {
+            println!("Problem {} has not been solved yet! Ignoring.", p);
+        }
+        else {
+            execute(SOLUTIONS[p]);
+        }
+    }
+
     //let (elapsed, _) = measure_time(|| p005a());
     //println!("    elapsed for p005a = {}", elapsed);
     //let (elapsed, _) = measure_time(|| p005b());
     //println!("    elapsed for p005b = {}", elapsed);
+}
+
+fn parse_arguments() -> Vec<usize> {
+    let mut args = HashSet::new();
+
+    for arg in std::env::args().skip(1) {
+        if arg == "all" {
+            args.extend(1..SOLUTIONS.len());
+        }
+        else if let Ok(n) = arg.parse::<usize>() {
+            args.insert(n);
+        } else if arg.contains("..") {
+            let items = arg.split("..").collect::<Vec<&str>>();
+            if items.len() == 2 {
+                if let Ok(start) = items[0].parse::<usize>() {
+                    if let Ok(end) = items[1].parse::<usize>() {
+                        if end > start {
+                            args.extend(start..end + 1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if args.is_empty() {
+        args.insert(0);
+    }
+
+    let mut v = args.into_iter().collect::<Vec<_>>();
+    v.sort();
+    v
+}
+
+fn execute(f: fn()) {
+    f();
 }
