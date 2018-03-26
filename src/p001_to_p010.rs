@@ -3,36 +3,39 @@ use fibonacci::FibonacciIterator;
 use prime::*;
 use calc;
 
-pub fn p001() {
+pub fn p001() -> Option<u64> {
     let answer = (0..1000)
         .filter(|&x| x % 3 == 0 || x % 5 == 0)
-        .sum::<usize>();
+        .sum();
 
-    println!("p001 answer = {}", answer);
+    Some(answer)
 }
 
-
-pub fn p002() {
+pub fn p002() -> Option<u64> {
     let answer = FibonacciIterator::new()
         .filter(|&x| x % 2 == 0)
         .take_while(|&x| x < 4_000_000)
         .sum::<u64>();
 
-    println!("p002 answer = {}", answer);
+    Some(answer)
 }
 
-pub fn p003() {
+pub fn p003() -> Option<u64> {
     let input = 600_851_475_143;
     let limit = calc::sqrt_ceil(input);
     let primes = PrimeIterator::new()
         .take_while(|&p| p < limit)
         .collect::<Vec<u64>>();
 
-    let answer = primes.iter().rev().skip_while(|&p| input % p != 0).next().unwrap();
-    println!("p003 answer = {:?}", answer);
+    let answer = primes.iter()
+        .rev()
+        .skip_while(|&p| input % p != 0)
+        .next()
+        .unwrap();
+    Some(*answer)
 }
 
-pub fn p004() {
+pub fn p004() -> Option<u64> {
     let mut largest = 0;
 
     // Optimisations
@@ -50,15 +53,16 @@ pub fn p004() {
         }
     }
 
-    println!("p004 answer = {:?}", largest);
+    Some(largest)
 }
 
-pub fn p005() {
-    execute(5, p005a);
-    execute(5, p005b);
+pub fn p005() -> Option<u64> {
+    sub_execute(5, "a", p005a);
+    sub_execute(5, "b", p005b);
+    None
 }
 
-fn p005a() {
+fn p005a() -> Option<u64> {
     // This problem is formally known as "lowest common multiple".
 
     // must be even (* 2)
@@ -81,10 +85,10 @@ fn p005a() {
         n += increment;
     }
 
-    println!("p005a answer = {}", n);
+    Some(n)
 }
 
-fn p005b() {
+fn p005b() -> Option<u64> {
     // This problem is formally known as "lowest common multiple".
 
     // Alternative solution. Must be divisible by a product of all the primes up to 20:
@@ -107,7 +111,7 @@ fn p005b() {
         n += increment;
     }
 
-    println!("p005b answer = {}", n);
+    Some(n)
 
     // TODO: There are still faster ways of computing this.
     // See https://projecteuler.net/thread=5;page=5

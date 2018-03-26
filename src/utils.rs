@@ -1,9 +1,15 @@
 use elapsed::measure_time;
 
-pub fn execute(n: usize, f: fn()) {
-    let (elapsed, _) = measure_time(f);
-    let msg = format!("     p{:03} completed in {}", n, elapsed);
-    println!("{}", msg);
+pub fn execute(n: usize, f: fn() -> Option<u64>) {
+    sub_execute(n, "", f);
+}
+
+pub fn sub_execute(n: usize, msg: &str, f: fn() -> Option<u64>) {
+    let (elapsed, answer) = measure_time(f);
+    if let Some(answer) = answer {
+        let problem = format!("p{:03}{}", n, msg);
+        println!("{:10}  {:15}  {:15}", problem, elapsed, answer);
+    }
 }
 
 /// Convert a number to a vector of bytes, each of which is guaranteed

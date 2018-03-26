@@ -20,7 +20,7 @@ fn show_help() {
     println!();
 }
 
-static SOLUTIONS: [fn(); 5] = [p001, p002, p003, p004, p005];
+static SOLUTIONS: [fn() -> Option<u64>; 5] = [p001, p002, p003, p004, p005];
 
 fn main() {
     let problems = parse_arguments();
@@ -29,6 +29,9 @@ fn main() {
         show_help();
         return;
     }
+
+    println!("Problem     Time             Answer");
+    println!("==========  ===============  ===============");
 
     for p in problems {
         if p > SOLUTIONS.len() {
