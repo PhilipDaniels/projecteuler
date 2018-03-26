@@ -51,7 +51,7 @@ fn is_prime(known_primes: &[u64], n: u64) -> bool {
     let upper_limit = calc::sqrt_ceil(n);
 
     for &p in known_primes {
-        if p >= upper_limit {
+        if p > upper_limit {
             return true;
         }
         if n % p == 0 {
@@ -73,7 +73,20 @@ mod tests {
 
     #[test]
     fn primes_in_range_for_start_at_zero_returns_first_primes() {
+        assert_eq!(primes_in_range(0..1),  vec![]);
+        assert_eq!(primes_in_range(0..2),  vec![]);
+        assert_eq!(primes_in_range(0..3),  vec![2]);
+        assert_eq!(primes_in_range(0..4),  vec![2, 3]);
+        assert_eq!(primes_in_range(0..5),  vec![2, 3]);
+        assert_eq!(primes_in_range(0..6),  vec![2, 3, 5]);
+        assert_eq!(primes_in_range(0..7),  vec![2, 3, 5]);
+        assert_eq!(primes_in_range(0..8),  vec![2, 3, 5, 7]);
+        assert_eq!(primes_in_range(0..9),  vec![2, 3, 5, 7]);
         assert_eq!(primes_in_range(0..10), vec![2, 3, 5, 7]);
+        assert_eq!(primes_in_range(0..11), vec![2, 3, 5, 7]);
+        assert_eq!(primes_in_range(0..12), vec![2, 3, 5, 7, 11]);
+        assert_eq!(primes_in_range(0..13), vec![2, 3, 5, 7, 11]);
+        assert_eq!(primes_in_range(0..14), vec![2, 3, 5, 7, 11, 13]);
     }
 
     #[test]

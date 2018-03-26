@@ -3,7 +3,7 @@ use std::mem;
 /// Compute ceil(sqrt(n)). Useful for setting upper bounds for some
 /// algorithms, for example, computing prime numbers.
 pub fn sqrt_ceil(n: u64) -> u64 {
-    (n as f64).sqrt() as u64 + 1
+    (n as f64).sqrt().ceil() as u64
 }
 
 /// Compute greatest common divisor by Euclid's algorithm.
