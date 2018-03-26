@@ -1,32 +1,9 @@
-use std;
 use elapsed::measure_time;
 
 pub fn execute(n: usize, f: fn()) {
     let (elapsed, _) = measure_time(f);
     let msg = format!("     p{:03} completed in {}", n, elapsed);
     println!("{}", msg);
-}
-
-/// Compute ceil(sqrt(n)). Useful for setting upper bounds for some
-/// algorithms, for example, computing prime numbers.
-pub fn sqrt_ceil(n: u64) -> u64
-{
-    (n as f64).sqrt() as u64 + 1
-}
-
-/// Compute greatest common divisor by Euclid's algorithm.
-pub fn gcd(mut n: u64, mut m: u64) -> u64 {
-    debug_assert!(n != 0 && m != 0);
-
-    while m != 0 {
-        if m < n {
-            std::mem::swap(&mut m, &mut n);
-        }
-
-        m %= n
-    }
-
-    n
 }
 
 /// Convert a number to a vector of bytes, each of which is guaranteed
@@ -37,13 +14,13 @@ pub fn format_number(n: u64) -> Vec<u8> {
 }
 
 /// Check whether a number is a palindrome when converted to a string.
-pub fn is_palindrome(n: u64) -> bool {
-    is_palindrome_vec(&format_number(n))
+pub fn is_palindrome_number(n: u64) -> bool {
+    is_palindrome(&format_number(n))
 }
 
 /// Check whether a vector is a palindrome.
 /// An empty vector is considered to be a palindrome.
-pub fn is_palindrome_vec(s: &[u8]) -> bool {
+pub fn is_palindrome(s: &[u8]) -> bool {
     if s.is_empty() {
         return true;
     }
@@ -67,35 +44,26 @@ mod tests {
     use super::*;
 
     #[test]
-    fn is_palindrome_vec_for_empty_vec_returns_true() {
-        assert!(is_palindrome_vec(&Vec::new()));
+    fn is_palindrome_vec_for_empty_slice_returns_true() {
+        assert!(is_palindrome(&Vec::new()));
     }
 
     #[test]
-    fn is_palindrome_vec_for_singleton_vec_returns_true() {
-        assert!(is_palindrome_vec(&vec![22]));
+    fn is_palindrome_for_singleton_slice_returns_true() {
+        assert!(is_palindrome(&vec![22]));
     }
 
     #[test]
-    fn is_palindrome_vec_for_vecs_which_are_not_palindromes_returns_false() {
-        assert!(!is_palindrome_vec(&vec![1, 2]));
-        assert!(!is_palindrome_vec(&vec![1, 2, 2]));
-        assert!(!is_palindrome_vec(&vec![1, 2, 3]));
+    fn is_palindrome_vec_for_slices_which_are_not_palindromes_returns_false() {
+        assert!(!is_palindrome(&vec![1, 2]));
+        assert!(!is_palindrome(&vec![1, 2, 2]));
+        assert!(!is_palindrome(&vec![1, 2, 3]));
     }
 
     #[test]
-    fn is_palindrome_vec_for_vecs_which_are_palindromes_returns_true() {
-        assert!(is_palindrome_vec(&vec![1, 1]));
-        assert!(is_palindrome_vec(&vec![1, 2, 1]));
-        assert!(is_palindrome_vec(&vec![1, 2, 3, 2, 1]));
-    }
-
-    #[test]
-    fn gcd_works() {
-        assert_eq!(1, gcd(1, 1));
-        assert_eq!(1, gcd(1, 2));
-        assert_eq!(1, gcd(1, 3));
-        assert_eq!(2, gcd(2, 2));
-        assert_eq!(2 * 7, gcd(2 * 3 * 5 * 7, 2 * 7));
+    fn is_palindrome_for_slices_which_are_palindromes_returns_true() {
+        assert!(is_palindrome(&vec![1, 1]));
+        assert!(is_palindrome(&vec![1, 2, 1]));
+        assert!(is_palindrome(&vec![1, 2, 3, 2, 1]));
     }
 }

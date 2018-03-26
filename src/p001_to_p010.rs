@@ -1,6 +1,7 @@
 use utils::*;
 use fibonacci::FibonacciIterator;
 use prime::*;
+use calc;
 
 pub fn p001() {
     let answer = (0..1000)
@@ -22,7 +23,7 @@ pub fn p002() {
 
 pub fn p003() {
     let input = 600_851_475_143;
-    let limit = sqrt_ceil(input);
+    let limit = calc::sqrt_ceil(input);
     let primes = PrimeIterator::new()
         .take_while(|&p| p < limit)
         .collect::<Vec<u64>>();
@@ -43,7 +44,7 @@ pub fn p004() {
     for a in (100..1000).rev() {
         for b in (100..1000).rev() {
             let product = a * b;
-            if product > largest && is_palindrome(product) {
+            if product > largest && is_palindrome_number(product) {
                 largest = product;
             }
         }

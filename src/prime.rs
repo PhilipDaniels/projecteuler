@@ -1,5 +1,5 @@
 use std::ops::Range;
-use utils::*;
+use calc;
 
 // TODO: Create an "in range" iterator adaptor.
 pub fn primes_in_range(r: Range<u64>) -> Vec<u64> {
@@ -48,7 +48,7 @@ impl Iterator for PrimeIterator {
 }
 
 fn is_prime(known_primes: &[u64], n: u64) -> bool {
-    let upper_limit = sqrt_ceil(n);
+    let upper_limit = calc::sqrt_ceil(n);
 
     for &p in known_primes {
         if p >= upper_limit {

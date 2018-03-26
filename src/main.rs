@@ -2,6 +2,7 @@ extern crate elapsed;
 
 mod fibonacci;
 mod prime;
+mod calc;
 mod utils;
 mod p001_to_p010;
 
