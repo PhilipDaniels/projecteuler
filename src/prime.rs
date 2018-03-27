@@ -1,6 +1,52 @@
 use std::ops::Range;
 use calc;
 
+pub trait MyItertools : Iterator {
+    /// Create an InRange structure which can be used as an iterator.
+    /// Based on itertools.step().
+    fn in_range(self, r: Range<u64>) -> InRange<Self>
+        where Self: Iterator<Item = u64> + Sized
+    {
+        InRange { iter: self, r, have_skipped: false }
+    }
+}
+
+impl<T: ?Sized> MyItertools for T where T: Iterator { }
+
+// The in range structure.
+pub struct InRange<I>
+    where I:Iterator<Item=u64>
+{
+    iter: I,
+    r: Range<I::Item>,
+    have_skipped: bool
+}
+
+impl<I> Iterator for InRange<I>
+    where I:Iterator<Item=u64>
+{
+    type Item = I::Item;
+    #[inline]
+    fn next(&mut self) -> Option<I::Item> {
+        // We have to return a single item on each call.
+        let start = self.r.start;
+        let end = self.r.end;
+
+        if !self.have_skipped {
+            let i = self.iter.find(|&p| p >= start);
+            self.have_skipped = true;
+            return i;
+        }
+
+        if let Some(n) = self.iter.next() {
+            if n < end {
+                return Some(n);
+            }
+        }
+        None
+    }
+}
+
 // TODO: Create an "in range" iterator adaptor.
 pub fn primes_in_range(r: Range<u64>) -> Vec<u64> {
     PrimeIterator::new()
@@ -64,7 +110,7 @@ fn is_prime(known_primes: &[u64], n: u64) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::primes_in_range;
+    use super::{primes_in_range, MyItertools};
 
     #[test]
     fn primes_in_range_for_empty_range_returns_empty_vec() {
@@ -92,5 +138,21 @@ mod tests {
     #[test]
     fn primes_in_range_for_start_at_nonzero_returns_correct_primes() {
         assert_eq!(primes_in_range(10..20), vec![11, 13, 17, 19]);
+    }
+
+    #[test]
+    fn in_range_works() {
+        let v = (0..10).collect::<Vec<_>>();
+        let result = v.into_iter().in_range(0..3).collect::<Vec<_>>();
+        assert_eq!(result, vec![0, 1, 2]);
+
+        let v = (0..10).collect::<Vec<_>>();
+        let result = v.into_iter().in_range(4..8).collect::<Vec<_>>();
+        assert_eq!(result, vec![4, 5, 6, 7]);
+
+        // TODO: This doesn't work.
+//        let v = (0..10).collect::<Vec<_>>();
+//        let result = v.iter().in_range(4..8).collect::<Vec<_>>();
+//        assert_eq!(result, vec![4, 5, 6, 7]);
     }
 }
