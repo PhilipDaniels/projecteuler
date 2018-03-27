@@ -116,3 +116,12 @@ fn p005b() -> Option<u64> {
     // TODO: There are still faster ways of computing this.
     // See https://projecteuler.net/thread=5;page=5
 }
+
+pub fn p006() -> Option<u64> {
+    // There is a formula for this.
+    let sum_squares: u64 = (1..101).map(|x| x * x).sum();
+    let square_sum = 5050 * 5050;
+    let answer = square_sum - sum_squares;
+    assert_eq!(answer, 25164150);
+    Some(answer)
+}
