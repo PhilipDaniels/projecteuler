@@ -20,7 +20,7 @@ fn show_help() {
     println!();
 }
 
-static SOLUTIONS: [fn() -> Option<u64>; 6] = [p001, p002, p003, p004, p005, p006];
+static SOLUTIONS: [fn() -> Option<u64>; 7] = [p001, p002, p003, p004, p005, p006, p007];
 
 fn main() {
     let problems = parse_arguments();

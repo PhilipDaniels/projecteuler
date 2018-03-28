@@ -134,3 +134,10 @@ pub fn p006() -> Option<u64> {
     assert_eq!(answer, 25164150);
     Some(answer)
 }
+
+pub fn p007() -> Option<u64> {
+    let answer = PrimeIterator::new().skip(10000).next().unwrap();
+
+    assert_eq!(answer, 104743);
+    Some(answer)
+}
