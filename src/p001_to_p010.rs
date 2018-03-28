@@ -177,3 +177,24 @@ pub fn p008() -> Option<u64> {
     assert_eq!(answer, 23514624000);
     Some(answer)
 }
+
+pub fn p009() -> Option<u64> {
+    let mut answer = 0;
+
+    // Brute force over the entire range. A direct translation of the problem
+    // into code without thinking.
+    for a in 1..1001 {
+        for b in a + 1..1001 {
+            for c in b + 1..1001 {
+                if (a*a) + (b*b) == c*c {
+                    if a + b + c == 1000 {
+                        answer = a * b * c;
+                    }
+                }
+            }
+        }
+    }
+
+    assert_eq!(answer, 31875000);
+    Some(answer)
+}
