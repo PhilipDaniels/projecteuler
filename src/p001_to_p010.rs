@@ -143,7 +143,10 @@ pub fn p007() -> Option<u64> {
 }
 
 pub fn p008() -> Option<u64> {
-    let input = "73167176531330624919225119674426574742355349194934\
+    // This shows functional style programming, doing it in one
+    // statement with an iterator chain.
+
+    let answer = "73167176531330624919225119674426574742355349194934\
 96983520312774506326239578318016984801869478851843\
 85861560789112949495459501737958331952853208805511\
 12540698747158523863050715693290963295227443043557\
@@ -162,17 +165,14 @@ pub fn p008() -> Option<u64> {
 07198403850962455444362981230987879927244284909188\
 84580156166097919133875499200524063689912560717606\
 05886116467109405077541002256983155200055935729725\
-71636269561882670428252483600823257530420752963450".chars()
+71636269561882670428252483600823257530420752963450"
+        .chars()
         .map(|c| c.to_digit(10).unwrap() as u64)
-        .collect::<Vec<u64>>();
-
-    let mut answer = 0;
-    for chunk in input.windows(13) {
-        let product = chunk.iter().product::<u64>();
-        if product > answer {
-            answer = product;
-        }
-    }
+        .collect::<Vec<_>>()
+        .windows(13)
+        .map(|window| window.iter().product::<u64>())
+        .max()
+        .unwrap();
 
     assert_eq!(answer, 23514624000);
     Some(answer)
