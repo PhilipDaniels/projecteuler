@@ -181,6 +181,8 @@ pub fn p008() -> Option<u64> {
 pub fn p009() -> Option<u64> {
     let mut answer = 0;
 
+    // TODO: There are better ways (Euclid's formula) or just cutting down the loop limits.
+
     // Brute force over the entire range. A direct translation of the problem
     // into code without thinking.
     for a in 1..1001 {
@@ -196,5 +198,15 @@ pub fn p009() -> Option<u64> {
     }
 
     assert_eq!(answer, 31875000);
+    Some(answer)
+}
+
+pub fn p010() -> Option<u64> {
+    // TODO: Speed up my prime iterator.
+    let answer = PrimeIterator::new()
+        .take_while(|&p| p < 2_000_000)
+        .sum();
+
+    assert_eq!(answer, 142913828922);
     Some(answer)
 }
