@@ -8,6 +8,7 @@ pub fn p001() -> Option<u64> {
         .filter(|&x| x % 3 == 0 || x % 5 == 0)
         .sum();
 
+    assert_eq!(answer, 233168);
     Some(answer)
 }
 
@@ -17,6 +18,7 @@ pub fn p002() -> Option<u64> {
         .take_while(|&x| x < 4_000_000)
         .sum::<u64>();
 
+    assert_eq!(answer, 4613732);
     Some(answer)
 }
 
@@ -27,16 +29,18 @@ pub fn p003() -> Option<u64> {
         .take_while(|&p| p < limit)
         .collect::<Vec<u64>>();
 
-    let answer = primes.iter()
+    let answer = *primes.iter()
         .rev()
         .skip_while(|&p| input % p != 0)
         .next()
         .unwrap();
-    Some(*answer)
+
+    assert_eq!(answer, 6857);
+    Some(answer)
 }
 
 pub fn p004() -> Option<u64> {
-    let mut largest = 0;
+    let mut answer = 0;
 
     // Optimisations
     // 1. Do not do the slow is_palindrome check if the product is not largest - this
@@ -47,13 +51,14 @@ pub fn p004() -> Option<u64> {
     for a in (100..1000).rev() {
         for b in (100..1000).rev() {
             let product = a * b;
-            if product > largest && is_palindrome_number(product) {
-                largest = product;
+            if product > answer && is_palindrome_number(product) {
+                answer = product;
             }
         }
     }
 
-    Some(largest)
+    assert_eq!(answer, 906609);
+    Some(answer)
 }
 
 pub fn p005() -> Option<u64> {
@@ -85,7 +90,9 @@ fn p005a() -> Option<u64> {
         n += increment;
     }
 
-    Some(n)
+    let answer = n;
+    assert_eq!(answer, 232792560);
+    Some(answer)
 }
 
 fn p005b() -> Option<u64> {
@@ -111,7 +118,9 @@ fn p005b() -> Option<u64> {
         n += increment;
     }
 
-    Some(n)
+    let answer = n;
+    assert_eq!(answer, 232792560);
+    Some(answer)
 
     // TODO: There are still faster ways of computing this.
     // See https://projecteuler.net/thread=5;page=5
