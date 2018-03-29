@@ -5,6 +5,7 @@ mod prime;
 mod calc;
 mod utils;
 mod p001_to_p010;
+mod iterator_adapters;
 
 use std::collections::HashSet;
 use p001_to_p010::*;
