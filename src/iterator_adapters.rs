@@ -11,21 +11,23 @@ pub trait IteratorAdapters: Iterator {
     /// Create an InRange structure which can be used as an iterator.
     /// Based on itertools.step().
     /// This is a Type 3 iterator adapter (it returns another iterator).
-    fn in_range(self, r: Range<u64>) -> InRange<Self>
-        where Self: Iterator<Item = u64> + Sized
+    fn in_range<T>(self, r: Range<T>) -> InRange<Self>
+        where Self: Iterator<Item = T> + Sized
     {
         InRange { iter: self, r, have_skipped: false }
     }
 }
 
 // Step 2: Use that trait to add extension methods to the Iterator trait.
-impl<T: ?Sized> IteratorAdapters for T where T: Iterator { }
+// The impl block itself is empty because we defaulted all the method definitions
+// in the trait definition itself.
+impl<T> IteratorAdapters for T where T: Iterator { }
 
 
-// Step 3: Define the structs required by our adapters (if any, these are only
-// required if the adapters need to manage state).
+// Step 3: Define the structs required by our adapters, if any: these are only
+// required if the adapters need to manage state.
 pub struct InRange<I>
-    where I:Iterator<Item=u64>
+    where I: Iterator
 {
     iter: I,
     r: Range<I::Item>,
@@ -35,23 +37,27 @@ pub struct InRange<I>
 /// Step 4: The InRange struct is itself an iterator (it returns multiple items) so we need
 /// to `impl Iterator` for it.
 impl<I> Iterator for InRange<I>
-    where I:Iterator<Item=u64>
+    where I:Iterator,
+          I::Item: PartialOrd
 {
     type Item = I::Item;
     #[inline]
     fn next(&mut self) -> Option<I::Item> {
         // We have to return a single item on each call.
-        let start = self.r.start;
-        let end = self.r.end;
-
         if !self.have_skipped {
-            let i = self.iter.find(|&p| p >= start);
             self.have_skipped = true;
-            return i;
+
+            while let Some(x) = self.iter.next() {
+                if x >= self.r.start {
+                    return Some(x);
+                }
+            }
+
+            return None;
         }
 
         if let Some(n) = self.iter.next() {
-            if n < end {
+            if n < self.r.end {
                 return Some(n);
             }
         }
