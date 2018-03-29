@@ -41,9 +41,9 @@ impl<I> Iterator for InRange<I>
           I::Item: PartialOrd
 {
     type Item = I::Item;
+
     #[inline]
     fn next(&mut self) -> Option<I::Item> {
-        // We have to return a single item on each call.
         if !self.have_skipped {
             self.have_skipped = true;
 
@@ -74,17 +74,17 @@ mod tests {
 
     #[test]
     fn in_range_works() {
-        let v = (0..10).collect::<Vec<_>>();
+        let v= vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         let result = v.into_iter().in_range(0..3).collect::<Vec<_>>();
         assert_eq!(result, vec![0, 1, 2]);
 
-        let v = (0..10).collect::<Vec<_>>();
+        let v= vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         let result = v.into_iter().in_range(4..8).collect::<Vec<_>>();
         assert_eq!(result, vec![4, 5, 6, 7]);
 
-        // TODO: This doesn't work.
-//        let v = (0..10).collect::<Vec<_>>();
-//        let result = v.iter().in_range(4..8).collect::<Vec<_>>();
-//        assert_eq!(result, vec![4, 5, 6, 7]);
+        // TODO: This is ugly...
+        let v= vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let result = v.iter().in_range(&4..&8).collect::<Vec<_>>();
+        assert_eq!(result, vec![&4, &5, &6, &7]);
     }
 }
