@@ -24,10 +24,12 @@ fn show_help() {
     println!();
 }
 
-static SOLUTIONS: [fn() -> Option<u64>; 11] =
+fn pnop() -> Option<u64> { None }
+
+static SOLUTIONS: [fn() -> Option<u64>; 12] =
     [
         p001, p002, p003, p004, p005, p006, p007, p008, p009, p010,
-        p011
+        p011, p012
     ];
 
 fn main() {
@@ -42,11 +44,12 @@ fn main() {
     println!("==========  ===============  ===============");
 
     for p in problems {
-        if p > SOLUTIONS.len() {
+        let f = if p > SOLUTIONS.len() { pnop } else { SOLUTIONS[p - 1] };
+
+        if f == pnop {
             println!("Problem {} has not been solved yet! Ignoring.", p);
-        }
-        else {
-            utils::execute(p,SOLUTIONS[p - 1]);
+        } else {
+            utils::execute(p, f);
         }
     }
 }

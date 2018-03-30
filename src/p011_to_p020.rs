@@ -89,4 +89,9 @@ pub fn p011() -> Option<u64> {
     Some(answer)
 }
 
+pub fn p012() -> Option<u64> {
+    let answer = 0;
 
+    assert_eq!(answer, 0);
+    Some(answer)
+}
