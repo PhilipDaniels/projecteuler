@@ -4,11 +4,14 @@ mod fibonacci;
 mod prime;
 mod calc;
 mod utils;
-mod p001_to_p010;
 mod iterator_adapters;
+mod matrix;
+mod p001_to_p010;
+mod p011_to_p020;
 
 use std::collections::HashSet;
 use p001_to_p010::*;
+use p011_to_p020::*;
 
 fn show_help() {
     println!("Welcome to my Project Euler solutions!");
@@ -21,9 +24,10 @@ fn show_help() {
     println!();
 }
 
-static SOLUTIONS: [fn() -> Option<u64>; 10] =
+static SOLUTIONS: [fn() -> Option<u64>; 11] =
     [
-        p001, p002, p003, p004, p005, p006, p007, p008, p009, p010
+        p001, p002, p003, p004, p005, p006, p007, p008, p009, p010,
+        p011
     ];
 
 fn main() {
