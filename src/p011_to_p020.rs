@@ -1,5 +1,6 @@
 use utils::*;
 use matrix::Matrix;
+use std::cmp::max;
 
 pub fn p011() -> Option<u64> {
     let input = "08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
@@ -25,10 +26,10 @@ pub fn p011() -> Option<u64> {
 
     let m = Matrix::<u64>::make_from_string(input).unwrap();
     assert_eq!(m.rows(), 20);
-    assert_eq!(m.columns(), 20);
+    assert_eq!(m.cols(), 20);
 
     // Exclusive upper-bounds for loop limits.
-    let horz_column_ub = m.columns() - 3;
+    let horz_column_ub = m.cols() - 3;
     let vert_row_ub = m.rows() - 3;
 
     let mut answer = 0;
@@ -36,52 +37,40 @@ pub fn p011() -> Option<u64> {
     // Generate 4-tuples horizontally.
     for col in 0..horz_column_ub {
         for row in 0..m.rows() {
-            let r = m.row(row);
-            let product = r[col] * r[col + 1] * r[col + 2] * r[col + 3];
-            if product > answer {
-                answer = product;
-            }
+            let product = m[row][col] * m[row][col + 1] * m[row][col + 2] * m[row][col + 3];
+            answer = max(answer, product);
         }
     }
 
     // Generate 4-tuples vertically.
-    for col in 0..m.columns() {
+    for col in 0..m.cols() {
         for row in 0..vert_row_ub {
-            let product = m.row(row)[col] *
-                               m.row(row + 1)[col] *
-                               m.row(row + 2)[col] *
-                               m.row(row + 3)[col];
-            if product > answer {
-                answer = product;
-            }
+            let product = m[row][col] * m[row + 1][col] * m[row + 2][col] * m[row + 3][col];
+            answer = max(answer, product);
         }
     }
 
     // Generate 4-tuples diagonally to the lower right.
     for col in 0..horz_column_ub {
         for row in 0..vert_row_ub {
-            let product = m.row(row)[col] *
-                               m.row(row + 1)[col + 1] *
-                               m.row(row + 2)[col + 2] *
-                               m.row(row + 3)[col + 3];
+            let product = m[row][col] *
+                               m[row + 1][col + 1] *
+                               m[row + 2][col + 2] *
+                               m[row + 3][col + 3];
 
-            if product > answer {
-                answer = product;
-            }
+            answer = max(answer, product);
         }
     }
 
     // Generate 4-tuples diagonally to the lower left.
-    for col in 3..m.columns() {
+    for col in 3..m.cols() {
         for row in 0..vert_row_ub {
-            let product = m.row(row)[col] *
-                m.row(row + 1)[col - 1] *
-                m.row(row + 2)[col - 2] *
-                m.row(row + 3)[col - 3];
+            let product = m[row][col] *
+                m[row + 1][col - 1] *
+                m[row + 2][col - 2] *
+                m[row + 3][col - 3];
 
-            if product > answer {
-                answer = product;
-            }
+            answer = max(answer, product);
         }
     }
 
