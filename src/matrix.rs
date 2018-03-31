@@ -6,17 +6,13 @@ pub struct Matrix<T> {
 }
 
 impl<T> Matrix<T> {
-    /// Constructs a new empty matrix.
-    pub fn new() -> Matrix<T> {
-        Matrix { data: Vec::new() }
-    }
-
     /// Constructs a matrix from a string. The string should consist of one or more lines separated
     /// by `\n` characters. Each line should consist of 1 or more values separated by spaces.
+    /// Each line must have the same number of elements.
     pub fn make_from_string(s: &str) -> Result<Matrix<T>, String>
         where T: FromStr
     {
-        let mut result = Matrix::new();
+        let mut result = Matrix { data: Vec::new() };
 
         // TODO: Improve this mess.
         for line in s.lines() {
@@ -63,14 +59,6 @@ impl<T> Matrix<T> {
 #[cfg(test)]
 mod tests {
     use super::Matrix;
-
-    #[test]
-    fn new_returns_empty_matrix() {
-        let m = Matrix::<i32>::new();
-        assert_eq!(m.rows(), 0);
-        assert_eq!(m.columns(), 0);
-        assert!(m.is_empty());
-    }
 
     #[test]
     fn make_from_string_for_empty_string_returns_empty_matrix() {
