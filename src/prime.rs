@@ -48,10 +48,10 @@ impl Iterator for PrimeIterator {
 }
 
 fn is_prime(known_primes: &[u64], n: u64) -> bool {
-    let upper_limit = calc::sqrt_ceil(n);
+    let upper_limit = calc::sqrt_upper_bound(n);
 
     for &p in known_primes {
-        if p > upper_limit {
+        if p >= upper_limit {
             return true;
         }
         if n % p == 0 {
