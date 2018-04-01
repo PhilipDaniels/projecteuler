@@ -1,6 +1,7 @@
 use utils::*;
 use matrix::Matrix;
 use std::cmp::max;
+use calc;
 
 pub fn p011() -> Option<u64> {
     sub_execute(11, "a", p011a);
@@ -211,8 +212,27 @@ fn p011c() -> Option<u64> {
 }
 
 pub fn p012() -> Option<u64> {
-    let answer = 0;
+    let mut max_divisors = 0;
+    let mut answer = 0;
 
-    assert_eq!(answer, 0);
+    for n in 5..100_000_000 {
+        let tri = calc::triangle(n);
+        let divisors = calc::divisors(tri);
+
+        if divisors.len() > max_divisors {
+            max_divisors = divisors.len();
+            answer = tri;
+        }
+
+        if max_divisors > 500 {
+            break;
+        }
+
+        if n % 100 == 0 {
+            println!("n = {}, tri = {}, max divisors = {}", n, tri, max_divisors);
+        }
+    }
+
+    assert_eq!(answer, 76576500);
     Some(answer)
 }
