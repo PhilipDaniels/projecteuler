@@ -2,6 +2,7 @@ use utils::*;
 use matrix::Matrix;
 use std::cmp::max;
 use calc;
+use std::str::FromStr;
 
 pub fn p011() -> Option<u64> {
     sub_execute(11, "a", p011a);
@@ -33,7 +34,7 @@ fn p011a() -> Option<u64> {
 20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54
 01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48";
 
-    let m = Matrix::<u64>::make_from_string(input).unwrap();
+    let m = Matrix::<u64>::from_str(input).unwrap();
     assert_eq!(m.rows(), 20);
     assert_eq!(m.cols(), 20);
 
@@ -113,7 +114,7 @@ fn p011b() -> Option<u64> {
 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00";
 
-    let m = Matrix::<u64>::make_from_string(input).unwrap();
+    let m = Matrix::<u64>::from_str(input).unwrap();
     assert_eq!(m.rows(), 23);
     assert_eq!(m.cols(), 26);
 
@@ -164,7 +165,7 @@ fn p011c() -> Option<u64> {
 20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54
 01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48";
 
-    let m = Matrix::<u64>::make_from_string(input).unwrap();
+    let m = Matrix::<u64>::from_str(input).unwrap();
     assert_eq!(m.rows(), 20);
     assert_eq!(m.cols(), 20);
     let mut answer = 0;
