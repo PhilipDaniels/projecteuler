@@ -217,20 +217,24 @@ pub fn p012() -> Option<u64> {
 
     for n in 5..100_000_000 {
         let tri = calc::triangle(n);
-        let divisors = calc::divisors(tri);
-
-        if divisors.len() > max_divisors {
-            max_divisors = divisors.len();
+        let divisors = calc::num_divisors(tri);
+        if divisors > 500 {
             answer = tri;
-        }
-
-        if max_divisors > 500 {
             break;
         }
 
-        if n % 100 == 0 {
-            println!("n = {}, tri = {}, max divisors = {}", n, tri, max_divisors);
-        }
+//        if divisors.len() > max_divisors {
+//            max_divisors = divisors.len();
+//            answer = tri;
+//        }
+//
+//        if max_divisors > 500 {
+//            break;
+//        }
+//
+//        if n % 100 == 0 {
+//            println!("n = {}, tri = {}, max divisors = {}", n, tri, max_divisors);
+//        }
     }
 
     assert_eq!(answer, 76576500);

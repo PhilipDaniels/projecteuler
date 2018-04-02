@@ -1,4 +1,5 @@
 use std::mem;
+use prime::PrimeIterator;
 
 /// Compute ceil(sqrt(n)). Note that this cannot be used in a simple range for things such
 /// as prime number sieves because it will fail if ceil(sqrt(n)) == sqrt(n). You need an upper
@@ -49,6 +50,79 @@ pub fn divisors(n: u64) -> Vec<u64> {
     if n > 1 {
         result.push(n);
     }
+
+    result
+}
+
+#[inline]
+pub fn num_divisors(n: u64) -> u64 {
+    if n == 1 {
+        return 1;
+    } else if n == 2 {
+        return 2;
+    }
+
+    let ub = (n as f64).sqrt() as u64 + 1;
+    let mut primes = PrimeIterator::new().take_while(|&p| p <= ub).collect::<Vec<_>>();
+    let mut divisors = Vec::<u64>::new();
+
+    // Find all the prime factors.
+    let mut result = 0;
+    for p in primes.iter() {
+        let remainder = n % *p;
+        if remainder == 0 {
+            divisors.push(*p);
+
+            // This prime is a factor. Now find how many times it divides into n.
+            let mut times = n / *p;
+            if n == p * p {
+                times -= 1;
+            }
+
+            if result == 0 {
+                result = times + 1;
+            } else {
+                result *= (times + 1);
+            }
+        }
+    }
+
+    result += 2;
+
+//
+//    let mut result = 0;
+//
+//    if n == 1 {
+//        result = 1;
+//        divisors.push(1);
+//    } else {
+//        result = 2;
+//        divisors.push(1);
+//        divisors.push(n);
+//    }
+//
+//    for p in primes.iter() {
+//        let remainder = n % *p;
+//        if remainder == 0 {
+//            let num_times = n / *p;
+//            result += num_times;
+//        }
+
+//        let px = *p;
+//        let d = n % px;
+//        if d == 0 {
+//            result += 1;
+//            divisors.push(px);
+//
+//            if n / px != px {
+//                divisors.push(n / px);
+//                result += 1;
+//            }
+//        }
+//    }
+
+//    divisors.sort();
+    println!("n = {}, ub = {}, primes = {:?}, divisors = {:?}, result = {}", n, ub, primes, divisors, result);
 
     result
 }
@@ -119,5 +193,26 @@ mod tests {
         assert_eq!(divisors(9), vec![1, 3, 9]);
         assert_eq!(divisors(10), vec![1, 2, 5, 10]);
         assert_eq!(divisors(28), vec![1, 2, 4, 7, 14, 28]);
+    }
+
+    #[test]
+    fn num_divisors_works() {
+        assert_eq!(num_divisors(1), 1);
+        assert_eq!(num_divisors(2), 2);
+        assert_eq!(num_divisors(3), 2);
+        assert_eq!(num_divisors(4), 3);
+        assert_eq!(num_divisors(5), 2);
+        assert_eq!(num_divisors(6), 4);
+        assert_eq!(num_divisors(7), 2);
+        assert_eq!(num_divisors(8), 4);
+        assert_eq!(num_divisors(9), 3);
+        assert_eq!(num_divisors(10), 4);
+        assert_eq!(num_divisors(11), 2);
+        assert_eq!(num_divisors(12), 6);
+        assert_eq!(num_divisors(13), 2);
+        assert_eq!(num_divisors(14), 4);
+        assert_eq!(num_divisors(15), 4);
+        assert_eq!(num_divisors(16), 5);
+        //assert_eq!(num_divisors(28), 6);
     }
 }
