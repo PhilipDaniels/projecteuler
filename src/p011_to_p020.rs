@@ -4,6 +4,7 @@ use std::cmp::max;
 use calc;
 use std::str::FromStr;
 use std::iter::Iterator;
+use std::collections::{HashMap, HashSet};
 
 pub fn p011() -> Option<u64> {
     sub_execute(11, "a", p011a);
@@ -416,3 +417,201 @@ pub fn p013() -> Option<u64> {
     Some(answer)
 }
 
+
+/* The following works mathematically, but overflows the stack
+pub fn p014() -> Option<u64> {
+    let mut known_collatzes = HashMap::<i32, i32>::new();
+    known_collatzes.insert(1, 1);
+
+    // For a prime p, we can quickly compute the Collatz chain formed from multiples of two,
+    // for example
+    //     2: 4 8 16 32 64 128 256 ...
+    //     3: 6 12 24 48 96
+    //     5: 10 20 40 80
+    // For n = 0..1_000_000, the largest 'next' number in the Collatz sequence is
+    // 3 * 999_999 + 1 = 2_999_997. This gives an initial upper bound.
+
+    fn collatz_len(n: i32, known_collatzes: &mut HashMap<i32, i32>) -> i32 {
+        match known_collatzes.get(&n) {
+            Some(len) => return *len,
+            None => {}
+        }
+
+        let next = if n % 2 == 0 {
+            n / 2
+        } else {
+            (3 * n) + 1
+        };
+
+        let next_len = collatz_len(next, known_collatzes);
+        known_collatzes.insert(next, next_len);
+        1 + next_len
+    }
+
+    let mut answer = 0;
+    for n in 2..1_000_000 {
+        let len = collatz_len(n, &mut known_collatzes);
+        if len > answer || n < 100 {
+            answer = len;
+            println!("n = {}, collatz_len = {}", n, len);
+        }
+    }
+
+    assert_eq!(answer, 0);
+    Some(answer as u64)
+}
+*/
+
+pub fn collatz(mut n: u64) -> Vec<u64> {
+    let mut result = Vec::new();
+    result.push(n);
+
+    loop {
+        let next = if n % 2 == 0 {
+            n / 2
+        } else {
+            (3 * n) + 1
+        };
+
+        result.push(next);
+        if next == 1 {
+            break;
+        } else {
+            n = next;
+        }
+    }
+
+    result
+}
+
+pub fn collatz_len(mut n: u64) -> u64 {
+    let mut result = 1;
+
+    loop {
+        let next = if n % 2 == 0 {
+            n / 2
+        } else {
+            (3 * n) + 1
+        };
+
+        result += 1;
+        if next == 1 {
+            break;
+        } else {
+            n = next;
+        }
+    }
+
+    result
+}
+
+pub fn p014() -> Option<u64> {
+    let mut answer_len = 0;
+    let mut answer_n = 0;
+
+    for n in 2..1_000_000 {
+        let collatz = collatz_len(n);
+//        if n < 100 {
+//            println!("n = {}, len = {}", n, collatz.len());
+//        }
+
+        if collatz > answer_len {
+            answer_len = collatz;
+            answer_n = n;
+
+//            println!("    NEW MAX: n = {}, len = {}", n, answer_len);
+        }
+    }
+
+    assert_eq!(answer_n, 837799);
+    Some(answer_n as u64)
+}
+
+/*
+pub fn p014() -> Option<u64> {
+    let mut known_collatzes = HashMap::<i32, i32>::new();
+    known_collatzes.insert(1, 1);
+
+    // This is our "stack" of work to do. Initialise it.
+    let mut todo = HashSet::new();
+    for n in 2..1_000_000 {
+        todo.insert(n);
+        if n % 2 == 0 && n != 2 {
+            todo.insert(n / 2);
+        } else {
+            todo.insert((3 * n) + 1);
+        };
+    }
+
+    // Now convert to a vector of unique numbers and sort.
+    let mut todo = todo.into_iter().collect::<Vec<i32>>();
+    todo.sort();
+
+    let mut answer = 0;
+
+    loop {
+        let mut pending = Vec::new();
+
+        // For each item left to process, see if we can work out its collatz length
+        // based on previous known collatzes.
+        for n in todo {
+            let next = if n % 2 == 0 {
+                n / 2
+            } else {
+                (3 * n) + 1
+            };
+
+            let n_collatz_len = 1 + known_collatzes.get(&next).unwrap_or(&-100);
+
+            if n_collatz_len > 0 {
+                known_collatzes.insert(n, n_collatz_len);
+
+                if n_collatz_len > answer || n < 100 {
+                    answer = n_collatz_len;
+                    println!("n = {}, collatz_len = {}", n, n_collatz_len);
+                }
+
+            } else {
+                pending.push(n);
+            }
+        }
+
+
+        todo = pending;
+        if todo.is_empty() {
+            break;
+        }
+    }
+
+
+
+//    fn collatz_len(n: i32, known_collatzes: &mut HashMap<i32, i32>) -> i32 {
+//        match known_collatzes.get(&n) {
+//            Some(len) => return *len,
+//            None => {}
+//        }
+//
+//        let next = if n % 2 == 0 {
+//            n / 2
+//        } else {
+//            (3 * n) + 1
+//        };
+//
+//        let next_len = collatz_len(next, known_collatzes);
+//        known_collatzes.insert(next, next_len);
+//        1 + next_len
+//    }
+//
+//    let mut answer = 0;
+//    for n in 2..1_000_000 {
+//        let len = collatz_len(n, &mut known_collatzes);
+//        if len > answer || n < 100 {
+//            answer = len;
+//            println!("n = {}, collatz_len = {}", n, len);
+//        }
+//    }
+
+    assert_eq!(answer, 0);
+    Some(answer as u64)
+}
+*/
