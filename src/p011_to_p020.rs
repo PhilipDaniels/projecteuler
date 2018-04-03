@@ -462,29 +462,35 @@ pub fn p014() -> Option<u64> {
 }
 */
 
-pub fn collatz(mut n: u64) -> Vec<u64> {
-    let mut result = Vec::new();
-    result.push(n);
+//pub fn collatz(mut n: u64) -> Vec<u64> {
+//    let mut result = Vec::new();
+//    result.push(n);
+//
+//    loop {
+//        let next = if n % 2 == 0 {
+//            n / 2
+//        } else {
+//            (3 * n) + 1
+//        };
+//
+//        result.push(next);
+//        if next == 1 {
+//            break;
+//        } else {
+//            n = next;
+//        }
+//    }
+//
+//    result
+//}
 
-    loop {
-        let next = if n % 2 == 0 {
-            n / 2
-        } else {
-            (3 * n) + 1
-        };
+// n = 2
+// result = 1
+// next = 1
 
-        result.push(next);
-        if next == 1 {
-            break;
-        } else {
-            n = next;
-        }
-    }
 
-    result
-}
-
-pub fn collatz_len(mut n: u64) -> u64 {
+/*
+pub fn collatz_len(mut n: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
     let mut result = 1;
 
     loop {
@@ -494,7 +500,45 @@ pub fn collatz_len(mut n: u64) -> u64 {
             (3 * n) + 1
         };
 
+        match known_collatzes.get(&n) {
+            Some(len) => return result + *len,
+            None => {}
+        }
+
         result += 1;
+        //println!("Inserting n = {}, len = {}", next, result);
+        //known_collatzes.insert(next, result);
+
+        if next == 1 {
+            break;
+        } else {
+            n = next;
+        }
+    }
+
+    result
+}
+*/
+
+pub fn collatz_len(mut n: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
+    let mut result = 1;
+
+    loop {
+        let next = if n % 2 == 0 {
+            n / 2
+        } else {
+            (3 * n) + 1
+        };
+
+        match known_collatzes.get(&n) {
+            Some(len) => return result + *len,
+            None => {}
+        }
+
+        result += 1;
+        //println!("Inserting n = {}, len = {}", next, result);
+        //known_collatzes.insert(next, result);
+
         if next == 1 {
             break;
         } else {
@@ -506,20 +550,19 @@ pub fn collatz_len(mut n: u64) -> u64 {
 }
 
 pub fn p014() -> Option<u64> {
+    let mut known_collatzes = HashMap::<u32, u32>::new();
+    known_collatzes.insert(1, 1);
+
     let mut answer_len = 0;
     let mut answer_n = 0;
 
     for n in 2..1_000_000 {
-        let collatz = collatz_len(n);
-//        if n < 100 {
-//            println!("n = {}, len = {}", n, collatz.len());
-//        }
+        let collatz = collatz_len(n, &mut known_collatzes);
+        //println!("n = {}, len = {}", n, collatz);
 
         if collatz > answer_len {
             answer_len = collatz;
             answer_n = n;
-
-//            println!("    NEW MAX: n = {}, len = {}", n, answer_len);
         }
     }
 
