@@ -26,10 +26,10 @@ fn show_help() {
 
 fn pnop() -> Option<u64> { None }
 
-static SOLUTIONS: [fn() -> Option<u64>; 12] =
+static SOLUTIONS: [fn() -> Option<u64>; 13] =
     [
         p001, p002, p003, p004, p005, p006, p007, p008, p009, p010,
-        p011, p012
+        p011, p012, p013
     ];
 
 fn main() {
