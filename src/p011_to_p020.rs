@@ -437,18 +437,29 @@ pub fn p014() -> Option<u64> {
 }
 */
 
+pub fn collatz_len(n: u32) -> u32 {
+    let mut known_collatzes = HashMap::new();
+    known_collatzes.insert(1, 1);
+    println!("Calculating collatz_len({})", n);
+    collatz_len2(n,n, 0, &mut known_collatzes)
+}
 
-pub fn collatz_len(mut n: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
-    match known_collatzes.get(&n) {
-        Some(clen) => return *clen,
-        None => {}
+pub fn collatz_len2(input_number: u32, mut next: u32, mut len_so_far: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
+    loop {
+        match known_collatzes.get(&next) {
+            Some(clen) => {
+                let clen_for_next = len_so_far + *clen;
+                println!("    Termination : next = {}, len_so_far = {}, clen_for_next = {}", next, len_so_far, clen_for_next);
+                return clen_for_next;
+            },
+            None => {}
+        }
+
+        // Calculate the next value in the Collatz sequence.
+        next = if next % 2 == 0 { next / 2 } else { (3 * next) + 1 };
+        len_so_far += 1;
+        println!("  Iteration     : next = {}, len_so_far = {}", next, len_so_far);
     }
-
-    // Calculate the next value in the Collatz sequence.
-    let next = if n % 2 == 0 { n / 2 } else { (3 * n) + 1 };
-
-    // Find the length of it.
-    1 + collatz_len(next, known_collatzes)
 }
 
 
@@ -459,86 +470,85 @@ mod tests {
 
     #[test]
     fn collatz_len_works() {
-        let mut kc = HashMap::new();
-        kc.insert(1, 1);
-
         // These values were pre-computed using a dumb, non-caching collatz_len function.
 
-        assert_eq!(collatz_len(1, &mut kc), 1);
-        assert_eq!(collatz_len(2, &mut kc), 2);
-        assert_eq!(collatz_len(3, &mut kc), 8);
-        assert_eq!(collatz_len(4, &mut kc), 3);
-        assert_eq!(collatz_len(5, &mut kc), 6);
-        assert_eq!(collatz_len(6, &mut kc), 9);
-        assert_eq!(collatz_len(7, &mut kc), 17);
-        assert_eq!(collatz_len(8, &mut kc), 4);
-        assert_eq!(collatz_len(9, &mut kc), 20);
-
-        assert_eq!(collatz_len(10, &mut kc), 7);
-        assert_eq!(collatz_len(11, &mut kc), 15);
-        assert_eq!(collatz_len(12, &mut kc), 10);
-        assert_eq!(collatz_len(13, &mut kc), 10);
-        assert_eq!(collatz_len(14, &mut kc), 18);
-        assert_eq!(collatz_len(15, &mut kc), 18);
-        assert_eq!(collatz_len(16, &mut kc), 5);
-        assert_eq!(collatz_len(17, &mut kc), 13);
-        assert_eq!(collatz_len(18, &mut kc), 21);
-        assert_eq!(collatz_len(19, &mut kc), 21);
+//        assert_eq!(collatz_len(1), 1);
+//        assert_eq!(collatz_len(2), 2);
+//        assert_eq!(collatz_len(3), 8);
+        assert_eq!(collatz_len(4), 3);
+//        assert_eq!(collatz_len(5), 6);
+//        assert_eq!(collatz_len(6), 9);
+//        assert_eq!(collatz_len(7), 17);
+//        assert_eq!(collatz_len(8), 4);
+//        assert_eq!(collatz_len(9), 20);
 //
-//        assert_eq!(collatz_len(20, &mut kc), 8);
-//        assert_eq!(collatz_len(21, &mut kc), 8);
-//        assert_eq!(collatz_len(22, &mut kc), 16);
-//        assert_eq!(collatz_len(23, &mut kc), 16);
-//        assert_eq!(collatz_len(24, &mut kc), 11);
-//        assert_eq!(collatz_len(25, &mut kc), 24);
-//        assert_eq!(collatz_len(26, &mut kc), 11);
-//        assert_eq!(collatz_len(27, &mut kc), 112);
-//        assert_eq!(collatz_len(28, &mut kc), 19);
-//        assert_eq!(collatz_len(29, &mut kc), 19);
+//        assert_eq!(collatz_len(10), 7);
+//        assert_eq!(collatz_len(11), 15);
+//        assert_eq!(collatz_len(12), 10);
+//        assert_eq!(collatz_len(13), 10);
+//        assert_eq!(collatz_len(14), 18);
+//        assert_eq!(collatz_len(15), 18);
+//        assert_eq!(collatz_len(16), 5);
+//        assert_eq!(collatz_len(17), 13);
+//        assert_eq!(collatz_len(18), 21);
+//        assert_eq!(collatz_len(19), 21);
 //
-//        assert_eq!(collatz_len(30, &mut kc), 19);
-//        assert_eq!(collatz_len(31, &mut kc), 107);
-//        assert_eq!(collatz_len(32, &mut kc), 6);
-//        assert_eq!(collatz_len(33, &mut kc), 27);
-//        assert_eq!(collatz_len(34, &mut kc), 14);
-//        assert_eq!(collatz_len(35, &mut kc), 14);
-//        assert_eq!(collatz_len(36, &mut kc), 22);
-//        assert_eq!(collatz_len(37, &mut kc), 22);
-//        assert_eq!(collatz_len(38, &mut kc), 22);
-//        assert_eq!(collatz_len(39, &mut kc), 35);
+//        assert_eq!(collatz_len(20), 8);
+//        assert_eq!(collatz_len(21), 8);
+//        assert_eq!(collatz_len(22), 16);
+//        assert_eq!(collatz_len(23), 16);
+//        assert_eq!(collatz_len(24), 11);
+//        assert_eq!(collatz_len(25), 24);
+//        assert_eq!(collatz_len(26), 11);
+//        assert_eq!(collatz_len(27), 112);
+//        assert_eq!(collatz_len(28), 19);
+//        assert_eq!(collatz_len(29), 19);
 //
-//        assert_eq!(collatz_len(40, &mut kc), 9);
-//        assert_eq!(collatz_len(41, &mut kc), 110);
-//        assert_eq!(collatz_len(42, &mut kc), 9);
-//        assert_eq!(collatz_len(43, &mut kc), 30);
-//        assert_eq!(collatz_len(44, &mut kc), 17);
-//        assert_eq!(collatz_len(45, &mut kc), 17);
-//        assert_eq!(collatz_len(46, &mut kc), 17);
-//        assert_eq!(collatz_len(47, &mut kc), 105);
-//        assert_eq!(collatz_len(48, &mut kc), 12);
-//        assert_eq!(collatz_len(49, &mut kc), 25);
+//        assert_eq!(collatz_len(30), 19);
+//        assert_eq!(collatz_len(31), 107);
+//        assert_eq!(collatz_len(32), 6);
+//        assert_eq!(collatz_len(33), 27);
+//        assert_eq!(collatz_len(34), 14);
+//        assert_eq!(collatz_len(35), 14);
+//        assert_eq!(collatz_len(36), 22);
+//        assert_eq!(collatz_len(37), 22);
+//        assert_eq!(collatz_len(38), 22);
+//        assert_eq!(collatz_len(39), 35);
+//
+//        assert_eq!(collatz_len(40), 9);
+//        assert_eq!(collatz_len(41), 110);
+//        assert_eq!(collatz_len(42), 9);
+//        assert_eq!(collatz_len(43), 30);
+//        assert_eq!(collatz_len(44), 17);
+//        assert_eq!(collatz_len(45), 17);
+//        assert_eq!(collatz_len(46), 17);
+//        assert_eq!(collatz_len(47), 105);
+//        assert_eq!(collatz_len(48), 12);
+//        assert_eq!(collatz_len(49), 25);
     }
 }
 
 pub fn p014() -> Option<u64> {
-    let mut known_collatzes = HashMap::<u32, u32>::new();
-    known_collatzes.insert(1, 1);
+//    let mut known_collatzes = HashMap::<u32, u32>::new();
+//    known_collatzes.insert(1, 1);
+//
+//    let mut answer_len = 0;
+//    let mut answer_n = 0;
+//
+//    for n in 2..1_000_000 {
+//        let collatz = collatz_len(n, &mut known_collatzes);
+//        //println!("n = {}, len = {}", n, collatz);
+//
+//        if collatz > answer_len {
+//            answer_len = collatz;
+//            answer_n = n;
+//        }
+//    }
+//
+//    assert_eq!(answer_n, 837799);
+//    Some(answer_n as u64)
 
-    let mut answer_len = 0;
-    let mut answer_n = 0;
-
-    for n in 2..1_000_000 {
-        let collatz = collatz_len(n, &mut known_collatzes);
-        //println!("n = {}, len = {}", n, collatz);
-
-        if collatz > answer_len {
-            answer_len = collatz;
-            answer_n = n;
-        }
-    }
-
-    assert_eq!(answer_n, 837799);
-    Some(answer_n as u64)
+    None
 }
 
 /*
