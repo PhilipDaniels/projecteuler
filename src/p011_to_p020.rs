@@ -521,6 +521,12 @@ pub fn collatz_len(mut n: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
 */
 
 pub fn collatz_len(mut n: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
+    match known_collatzes.get(&n) {
+        Some(clen) => return *clen,
+        None => {}
+    }
+
+
     let mut result = 1;
 
     loop {
@@ -547,6 +553,75 @@ pub fn collatz_len(mut n: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
     }
 
     result
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::collatz_len;
+    use std::collections::HashMap;
+
+    #[test]
+    fn collatz_len_works() {
+        let mut kc = HashMap::new();
+        kc.insert(1, 1);
+
+        // These values were pre-computed using a dumb, non-caching collatz_len function.
+
+        assert_eq!(collatz_len(1, &mut kc), 1);
+        assert_eq!(collatz_len(2, &mut kc), 2);
+        assert_eq!(collatz_len(3, &mut kc), 8);
+        assert_eq!(collatz_len(4, &mut kc), 3);
+        assert_eq!(collatz_len(5, &mut kc), 6);
+        assert_eq!(collatz_len(6, &mut kc), 9);
+        assert_eq!(collatz_len(7, &mut kc), 17);
+        assert_eq!(collatz_len(8, &mut kc), 4);
+        assert_eq!(collatz_len(9, &mut kc), 20);
+
+        assert_eq!(collatz_len(10, &mut kc), 7);
+        assert_eq!(collatz_len(11, &mut kc), 15);
+        assert_eq!(collatz_len(12, &mut kc), 10);
+        assert_eq!(collatz_len(13, &mut kc), 10);
+        assert_eq!(collatz_len(14, &mut kc), 18);
+        assert_eq!(collatz_len(15, &mut kc), 18);
+        assert_eq!(collatz_len(16, &mut kc), 5);
+        assert_eq!(collatz_len(17, &mut kc), 13);
+        assert_eq!(collatz_len(18, &mut kc), 21);
+        assert_eq!(collatz_len(19, &mut kc), 21);
+
+        assert_eq!(collatz_len(20, &mut kc), 8);
+        assert_eq!(collatz_len(21, &mut kc), 8);
+        assert_eq!(collatz_len(22, &mut kc), 16);
+        assert_eq!(collatz_len(23, &mut kc), 16);
+        assert_eq!(collatz_len(24, &mut kc), 11);
+        assert_eq!(collatz_len(25, &mut kc), 24);
+        assert_eq!(collatz_len(26, &mut kc), 11);
+        assert_eq!(collatz_len(27, &mut kc), 112);
+        assert_eq!(collatz_len(28, &mut kc), 19);
+        assert_eq!(collatz_len(29, &mut kc), 19);
+
+        assert_eq!(collatz_len(30, &mut kc), 19);
+        assert_eq!(collatz_len(31, &mut kc), 107);
+        assert_eq!(collatz_len(32, &mut kc), 6);
+        assert_eq!(collatz_len(33, &mut kc), 27);
+        assert_eq!(collatz_len(34, &mut kc), 14);
+        assert_eq!(collatz_len(35, &mut kc), 14);
+        assert_eq!(collatz_len(36, &mut kc), 22);
+        assert_eq!(collatz_len(37, &mut kc), 22);
+        assert_eq!(collatz_len(38, &mut kc), 22);
+        assert_eq!(collatz_len(39, &mut kc), 35);
+
+        assert_eq!(collatz_len(40, &mut kc), 9);
+        assert_eq!(collatz_len(41, &mut kc), 110);
+        assert_eq!(collatz_len(42, &mut kc), 9);
+        assert_eq!(collatz_len(43, &mut kc), 30);
+        assert_eq!(collatz_len(44, &mut kc), 17);
+        assert_eq!(collatz_len(45, &mut kc), 17);
+        assert_eq!(collatz_len(46, &mut kc), 17);
+        assert_eq!(collatz_len(47, &mut kc), 105);
+        assert_eq!(collatz_len(48, &mut kc), 12);
+        assert_eq!(collatz_len(49, &mut kc), 25);
+    }
 }
 
 pub fn p014() -> Option<u64> {
@@ -626,8 +701,6 @@ pub fn p014() -> Option<u64> {
         }
     }
 
-
-
 //    fn collatz_len(n: i32, known_collatzes: &mut HashMap<i32, i32>) -> i32 {
 //        match known_collatzes.get(&n) {
 //            Some(len) => return *len,
@@ -658,3 +731,4 @@ pub fn p014() -> Option<u64> {
     Some(answer as u64)
 }
 */
+
