@@ -1,4 +1,5 @@
 use std::mem;
+use std::collections::HashMap;
 use prime::PrimeIterator;
 
 /// Compute ceil(sqrt(n)). Note that this cannot be used in a simple range for things such
@@ -105,6 +106,50 @@ pub fn vec_to_num(v: Vec<u64>) -> u64 {
     num
 }
 
+/// Calculate the Collatz length (see https://projecteuler.net/problem=14) of a number
+/// without referring to any existing cache of known Collatz lengths.
+pub fn collatz_len_slow(n: u32) -> u32 {
+    let mut known_collatzes = HashMap::new();
+    known_collatzes.insert(1, 1);
+    collatz_len(n, &mut known_collatzes)
+}
+
+/// Calculate the Collatz length (see https://projecteuler.net/problem=14) of a number
+/// making use of an existing cache of known Collatz lengths.
+pub fn collatz_len(mut n: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
+    //println!("Calculating collatz_len({})", n);
+
+    let mut stack = Vec::new();
+    let mut clen = 0;
+
+    loop {
+        match known_collatzes.get(&n) {
+            Some(&len) => {
+                // Fix borrow-check problem by hoisting the value we care about out of this scope into a local variable.
+                clen = len;
+            },
+            None => {
+                stack.push(n);
+                n = if n % 2 == 0 { n / 2 } else { (3 * n) + 1 };
+                //println!("  Iteration     : n = {}, stack = {:?}", n, stack);
+                continue;
+            }
+        }
+
+        let clen_for_next = (stack.len() as u32) + clen;
+        //println!("    Termination : n = {}, stack = {:?}, clen_for_next = {}", n, stack, clen_for_next);
+
+        let mut i = 1;
+        while let Some(n) = stack.pop() {
+            //println!("    Optimization : inserting known_collatzes[{}] = {}", n, i + clen);
+            known_collatzes.insert(n, i + clen);
+            i += 1;
+        }
+
+        return clen_for_next;
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -203,5 +248,66 @@ mod tests {
         assert_eq!(vec_to_num(vec![1, 0]), 10);
         assert_eq!(vec_to_num(vec![1, 2, 3, 0]), 1230);
         assert_eq!(vec_to_num(vec![5, 5, 3, 7, 3, 7, 6, 2, 3, 0]), 5537376230);
+    }
+
+    #[test]
+    fn collatz_len_works() {
+        // These values were pre-computed using a dumb, non-caching collatz_len function.
+        let mut known_collatzes = HashMap::new();
+        known_collatzes.insert(1, 1);
+
+        assert_eq!(collatz_len(1, &mut known_collatzes), 1);
+        assert_eq!(collatz_len(2, &mut known_collatzes), 2);
+        assert_eq!(collatz_len(3, &mut known_collatzes), 8);
+        assert_eq!(collatz_len(4, &mut known_collatzes), 3);
+        assert_eq!(collatz_len(5, &mut known_collatzes), 6);
+        assert_eq!(collatz_len(6, &mut known_collatzes), 9);
+        assert_eq!(collatz_len(7, &mut known_collatzes), 17);
+        assert_eq!(collatz_len(8, &mut known_collatzes), 4);
+        assert_eq!(collatz_len(9, &mut known_collatzes), 20);
+
+        assert_eq!(collatz_len(10, &mut known_collatzes), 7);
+        assert_eq!(collatz_len(11, &mut known_collatzes), 15);
+        assert_eq!(collatz_len(12, &mut known_collatzes), 10);
+        assert_eq!(collatz_len(13, &mut known_collatzes), 10);
+        assert_eq!(collatz_len(14, &mut known_collatzes), 18);
+        assert_eq!(collatz_len(15, &mut known_collatzes), 18);
+        assert_eq!(collatz_len(16, &mut known_collatzes), 5);
+        assert_eq!(collatz_len(17, &mut known_collatzes), 13);
+        assert_eq!(collatz_len(18, &mut known_collatzes), 21);
+        assert_eq!(collatz_len(19, &mut known_collatzes), 21);
+
+        assert_eq!(collatz_len(20, &mut known_collatzes), 8);
+        assert_eq!(collatz_len(21, &mut known_collatzes), 8);
+        assert_eq!(collatz_len(22, &mut known_collatzes), 16);
+        assert_eq!(collatz_len(23, &mut known_collatzes), 16);
+        assert_eq!(collatz_len(24, &mut known_collatzes), 11);
+        assert_eq!(collatz_len(25, &mut known_collatzes), 24);
+        assert_eq!(collatz_len(26, &mut known_collatzes), 11);
+        assert_eq!(collatz_len(27, &mut known_collatzes), 112);
+        assert_eq!(collatz_len(28, &mut known_collatzes), 19);
+        assert_eq!(collatz_len(29, &mut known_collatzes), 19);
+
+        assert_eq!(collatz_len(30, &mut known_collatzes), 19);
+        assert_eq!(collatz_len(31, &mut known_collatzes), 107);
+        assert_eq!(collatz_len(32, &mut known_collatzes), 6);
+        assert_eq!(collatz_len(33, &mut known_collatzes), 27);
+        assert_eq!(collatz_len(34, &mut known_collatzes), 14);
+        assert_eq!(collatz_len(35, &mut known_collatzes), 14);
+        assert_eq!(collatz_len(36, &mut known_collatzes), 22);
+        assert_eq!(collatz_len(37, &mut known_collatzes), 22);
+        assert_eq!(collatz_len(38, &mut known_collatzes), 22);
+        assert_eq!(collatz_len(39, &mut known_collatzes), 35);
+
+        assert_eq!(collatz_len(40, &mut known_collatzes), 9);
+        assert_eq!(collatz_len(41, &mut known_collatzes), 110);
+        assert_eq!(collatz_len(42, &mut known_collatzes), 9);
+        assert_eq!(collatz_len(43, &mut known_collatzes), 30);
+        assert_eq!(collatz_len(44, &mut known_collatzes), 17);
+        assert_eq!(collatz_len(45, &mut known_collatzes), 17);
+        assert_eq!(collatz_len(46, &mut known_collatzes), 17);
+        assert_eq!(collatz_len(47, &mut known_collatzes), 105);
+        assert_eq!(collatz_len(48, &mut known_collatzes), 12);
+        assert_eq!(collatz_len(49, &mut known_collatzes), 25);
     }
 }
