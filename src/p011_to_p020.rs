@@ -440,52 +440,73 @@ pub fn p014() -> Option<u64> {
 pub fn collatz_len(n: u32) -> u32 {
     let mut known_collatzes = HashMap::new();
     known_collatzes.insert(1, 1);
-    println!("Calculating collatz_len({})", n);
-    collatz_len2(n,n, 0, &mut known_collatzes)
+    collatz_len_cached(n, &mut known_collatzes)
 }
 
-pub fn collatz_len2(input_number: u32, mut next: u32, mut len_so_far: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
+pub fn collatz_len_cached(mut n: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
+    println!("Calculating collatz_len({})", n);
+
+    let mut stack = Vec::new();
+    let mut clen = 0;
+
     loop {
-        match known_collatzes.get(&next) {
-            Some(clen) => {
-                let clen_for_next = len_so_far + *clen;
-                println!("    Termination : next = {}, len_so_far = {}, clen_for_next = {}", next, len_so_far, clen_for_next);
-                return clen_for_next;
+        match known_collatzes.get(&n) {
+            Some(&len) => {
+                // Fix borrow-check problem by hoisting the value we care about out of this scope into a local variable.
+                clen = len;
             },
-            None => {}
+            None => {
+                stack.push(n);
+                n = if n % 2 == 0 { n / 2 } else { (3 * n) + 1 };
+                println!("  Iteration     : next = {}, stack = {:?}", n, stack);
+                continue;
+            }
         }
 
-        // Calculate the next value in the Collatz sequence.
-        next = if next % 2 == 0 { next / 2 } else { (3 * next) + 1 };
-        len_so_far += 1;
-        println!("  Iteration     : next = {}, len_so_far = {}", next, len_so_far);
+        let clen_for_next = (stack.len() as u32) + clen;
+        println!("    Termination : next = {}, stack = {:?}, clen_for_next = {}", n, stack, clen_for_next);
+
+        if !stack.is_empty() {
+            let mut i = 1;
+            while let Some(n) = stack.pop() {
+                println!("    Optimization : inserting known_collatzes[{}] = {}", n, i + clen);
+                known_collatzes.insert(n, i + clen);
+                i += 1;
+            }
+
+            println!("    Status : known_collatzes.len() = {}", known_collatzes.len());
+        }
+
+        return clen_for_next;
     }
 }
 
 
 #[cfg(test)]
 mod tests {
-    use super::collatz_len;
+    use super::{collatz_len, collatz_len_cached};
     use std::collections::HashMap;
 
     #[test]
     fn collatz_len_works() {
         // These values were pre-computed using a dumb, non-caching collatz_len function.
+        let mut known_collatzes = HashMap::new();
+        known_collatzes.insert(1, 1);
 
-//        assert_eq!(collatz_len(1), 1);
-//        assert_eq!(collatz_len(2), 2);
-//        assert_eq!(collatz_len(3), 8);
-        assert_eq!(collatz_len(4), 3);
-//        assert_eq!(collatz_len(5), 6);
-//        assert_eq!(collatz_len(6), 9);
-//        assert_eq!(collatz_len(7), 17);
-//        assert_eq!(collatz_len(8), 4);
-//        assert_eq!(collatz_len(9), 20);
-//
-//        assert_eq!(collatz_len(10), 7);
-//        assert_eq!(collatz_len(11), 15);
-//        assert_eq!(collatz_len(12), 10);
-//        assert_eq!(collatz_len(13), 10);
+        assert_eq!(collatz_len_cached(1, &mut known_collatzes), 1);
+        assert_eq!(collatz_len_cached(2, &mut known_collatzes), 2);
+        assert_eq!(collatz_len_cached(3, &mut known_collatzes), 8);
+        assert_eq!(collatz_len_cached(4, &mut known_collatzes), 3);
+        assert_eq!(collatz_len_cached(5, &mut known_collatzes), 6);
+        assert_eq!(collatz_len_cached(6, &mut known_collatzes), 9);
+        assert_eq!(collatz_len_cached(7, &mut known_collatzes), 17);
+        assert_eq!(collatz_len_cached(8, &mut known_collatzes), 4);
+        assert_eq!(collatz_len_cached(9, &mut known_collatzes), 20);
+
+        assert_eq!(collatz_len_cached(10, &mut known_collatzes), 7);
+        assert_eq!(collatz_len_cached(11, &mut known_collatzes), 15);
+        assert_eq!(collatz_len_cached(12, &mut known_collatzes), 10);
+        assert_eq!(collatz_len_cached(13, &mut known_collatzes), 10);
 //        assert_eq!(collatz_len(14), 18);
 //        assert_eq!(collatz_len(15), 18);
 //        assert_eq!(collatz_len(16), 5);
