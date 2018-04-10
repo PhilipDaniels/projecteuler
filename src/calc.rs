@@ -115,6 +115,29 @@ pub fn collatz_len_slow(n: u32) -> u32 {
 }
 
 /// Calculate the Collatz length (see https://projecteuler.net/problem=14) of a number
+/// without referring to any existing cache of known Collatz lengths.
+pub fn collatz_len_simple(mut n: u64) -> u64 {
+    let mut result = 1;
+
+    loop {
+        let next = if n % 2 == 0 {
+            n / 2
+        } else {
+            (3 * n) + 1
+        };
+
+        result += 1;
+        if next == 1 {
+            break;
+        } else {
+            n = next;
+        }
+    }
+
+    result
+}
+
+/// Calculate the Collatz length (see https://projecteuler.net/problem=14) of a number
 /// making use of an existing cache of known Collatz lengths.
 pub fn collatz_len(mut n: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
     //println!("Calculating collatz_len({})", n);
