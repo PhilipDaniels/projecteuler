@@ -4,7 +4,7 @@ use std::cmp::max;
 use calc;
 use std::str::FromStr;
 use std::iter::Iterator;
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap};
 use fnv::FnvHashMap;
 
 pub fn p011() -> Option<u64> {
@@ -216,7 +216,6 @@ fn p011c() -> Option<u64> {
 }
 
 pub fn p012() -> Option<u64> {
-    let mut max_divisors = 0;
     let mut answer = 0;
 
     for n in 5..100_000_000 {

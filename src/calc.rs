@@ -60,7 +60,7 @@ pub fn divisors(n: u64) -> Vec<u64> {
 pub fn num_divisors(n: u64) -> u64 {
     println!("num_divisors for n = {}", n);
     let ub = sqrt_upper_bound(n);
-    let mut primes = PrimeIterator::new().take_while(|&p| p <= ub).collect::<Vec<_>>();
+    let primes = PrimeIterator::new().take_while(|&p| p <= ub).collect::<Vec<_>>();
     let mut divisors = Vec::<u64>::new();
 
     if n <= 2 {
@@ -144,7 +144,7 @@ pub fn collatz_len(mut n: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
     //println!("Calculating collatz_len({})", n);
 
     let mut stack = Vec::new();
-    let mut clen = 0;
+    let clen;
 
     loop {
         match known_collatzes.get(&n) {
@@ -240,7 +240,7 @@ pub fn collatz_len2(mut n: usize, known_collatzes: &mut KnownCollatzes) -> u32 {
     //println!("Calculating collatz_len({})", n);
 
     let mut stack = Vec::new();
-    let mut clen = 0;
+    let clen;
 
     loop {
         match known_collatzes.get(n) {
@@ -274,7 +274,7 @@ pub fn collatz_len3(mut n: usize, known_collatzes: &mut FnvHashMap<usize, usize>
     //println!("Calculating collatz_len({})", n);
 
     let mut stack = Vec::new();
-    let mut clen = 0;
+    let clen;
 
     loop {
         match known_collatzes.get(&n) {
