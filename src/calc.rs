@@ -173,6 +173,80 @@ pub fn collatz_len(mut n: u32, known_collatzes: &mut HashMap<u32, u32>) -> u32 {
     }
 }
 
+pub struct KnownCollatzes {
+    low: Vec<usize>,
+    high: HashMap<usize, usize>
+}
+
+impl KnownCollatzes {
+    pub fn new() -> Self {
+        let mut kc = KnownCollatzes {
+                        low: vec![0; 10_000_000],
+                        high: HashMap::new()
+                    };
+        kc.low[1] = 1;
+        kc
+    }
+
+    #[inline]
+    pub fn get(&self, n: usize) -> Option<usize> {
+        if n < self.low.len() {
+            if self.low[n] == 0 {
+                return None;
+            } else {
+                return Some(self.low[n]);
+            }
+        } else {
+            return match self.high.get(&n) {
+                Some(&clen) => Some(clen),
+                None => None
+            }
+        }
+    }
+
+    #[inline]
+    pub fn insert(&mut self, n: usize, collatz_len: usize) {
+        if n < self.low.len() {
+            self.low[n] = collatz_len;
+        } else {
+            self.high.insert(n, collatz_len);
+        }
+    }
+}
+
+pub fn collatz_len2(mut n: usize, known_collatzes: &mut KnownCollatzes) -> u32 {
+    //println!("Calculating collatz_len({})", n);
+
+    let mut stack = Vec::new();
+    let mut clen = 0;
+
+    loop {
+        match known_collatzes.get(n) {
+            Some(len) => {
+                // Fix borrow-check problem by hoisting the value we care about out of this scope into a local variable.
+                clen = len;
+            },
+            None => {
+                stack.push(n);
+                n = if n % 2 == 0 { n / 2 } else { (3 * n) + 1 };
+                //println!("  Iteration     : n = {}, stack = {:?}", n, stack);
+                continue;
+            }
+        }
+
+        let clen_for_next = stack.len() + clen;
+        //println!("    Termination : n = {}, stack = {:?}, clen_for_next = {}", n, stack, clen_for_next);
+
+        let mut i = 1;
+        while let Some(n) = stack.pop() {
+            //println!("    Optimization : inserting known_collatzes[{}] = {}", n, i + clen);
+            known_collatzes.insert(n, i + clen);
+            i += 1;
+        }
+
+        return clen_for_next as u32;
+    }
+}
 
 #[cfg(test)]
 mod tests {
