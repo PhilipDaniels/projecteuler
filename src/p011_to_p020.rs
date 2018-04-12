@@ -5,6 +5,7 @@ use calc;
 use std::str::FromStr;
 use std::iter::Iterator;
 use std::collections::{HashMap, HashSet};
+use fnv::FnvHashMap;
 
 pub fn p011() -> Option<u64> {
     sub_execute(11, "a", p011a);
@@ -421,6 +422,7 @@ pub fn p014() -> Option<u64> {
     sub_execute(14, "a (brute force)  ", p014a);
     sub_execute(14, "b (hashmap cache)", p014b);
     sub_execute(14, "c (struct cache) ", p014c);
+    sub_execute(14, "d (FnvHashMap)   ", p014d);
     None
 }
 
@@ -471,6 +473,27 @@ pub fn p014c() -> Option<u64> {
 
     for n in 2..1_000_000 {
         let clen = calc::collatz_len2(n, &mut known_collatzes);
+
+        if clen > answer_len {
+            answer_len = clen;
+            answer_n = n;
+            //println!("answer_n = {}, answer_len = {}", answer_n, answer_len);
+        }
+    }
+
+    assert_eq!(answer_n, 837799);
+    Some(answer_n as u64)
+}
+
+pub fn p014d() -> Option<u64> {
+    let mut known_collatzes = FnvHashMap::default();
+    known_collatzes.insert(1, 1);
+
+    let mut answer_len = 0;
+    let mut answer_n = 0;
+
+    for n in 2..1_000_000 {
+        let clen = calc::collatz_len3(n, &mut known_collatzes);
 
         if clen > answer_len {
             answer_len = clen;

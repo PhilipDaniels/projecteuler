@@ -1,6 +1,7 @@
 use std::mem;
 use std::collections::HashMap;
 use prime::PrimeIterator;
+use fnv::FnvHashMap;
 
 /// Compute ceil(sqrt(n)). Note that this cannot be used in a simple range for things such
 /// as prime number sieves because it will fail if ceil(sqrt(n)) == sqrt(n). You need an upper
@@ -244,6 +245,40 @@ pub fn collatz_len2(mut n: usize, known_collatzes: &mut KnownCollatzes) -> u32 {
     loop {
         match known_collatzes.get(n) {
             Some(len) => {
+                // Fix borrow-check problem by hoisting the value we care about out of this scope into a local variable.
+                clen = len;
+            },
+            None => {
+                stack.push(n);
+                n = if n % 2 == 0 { n / 2 } else { (3 * n) + 1 };
+                //println!("  Iteration     : n = {}, stack = {:?}", n, stack);
+                continue;
+            }
+        }
+
+        let clen_for_next = stack.len() + clen;
+        //println!("    Termination : n = {}, stack = {:?}, clen_for_next = {}", n, stack, clen_for_next);
+
+        let mut i = 1;
+        while let Some(n) = stack.pop() {
+            //println!("    Optimization : inserting known_collatzes[{}] = {}", n, i + clen);
+            known_collatzes.insert(n, i + clen);
+            i += 1;
+        }
+
+        return clen_for_next as u32;
+    }
+}
+
+pub fn collatz_len3(mut n: usize, known_collatzes: &mut FnvHashMap<usize, usize>) -> u32 {
+    //println!("Calculating collatz_len({})", n);
+
+    let mut stack = Vec::new();
+    let mut clen = 0;
+
+    loop {
+        match known_collatzes.get(&n) {
+            Some(&len) => {
                 // Fix borrow-check problem by hoisting the value we care about out of this scope into a local variable.
                 clen = len;
             },

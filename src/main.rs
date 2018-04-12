@@ -1,4 +1,5 @@
 extern crate elapsed;
+extern crate fnv;
 
 mod fibonacci;
 mod prime;
