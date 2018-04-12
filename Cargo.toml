@@ -6,3 +6,4 @@ authors = ["Philip Daniels <Philip.Daniels1971@gmail.com>"]
 [dependencies]
 itertools = "0.7.8"
 elapsed = "0.1"
+fnv = "1.0.3"
