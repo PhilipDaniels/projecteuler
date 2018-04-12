@@ -87,7 +87,7 @@ fn p011a() -> Option<u64> {
         }
     }
 
-    assert_eq!(answer, 70600674);
+    assert_eq!(answer, 70_600_674);
     Some(answer)
 }
 
@@ -140,7 +140,7 @@ fn p011b() -> Option<u64> {
         }
     }
 
-    assert_eq!(answer, 70600674);
+    assert_eq!(answer, 70_600_674);
     Some(answer)
 }
 
@@ -211,7 +211,7 @@ fn p011c() -> Option<u64> {
         }
     }
 
-    assert_eq!(answer, 70600674);
+    assert_eq!(answer, 70_600_674);
     Some(answer)
 }
 
@@ -240,7 +240,7 @@ pub fn p012() -> Option<u64> {
 //        }
     }
 
-    assert_eq!(answer, 76576500);
+    assert_eq!(answer, 76_576_500);
     Some(answer)
 }
 
@@ -407,13 +407,13 @@ pub fn p013() -> Option<u64> {
         }
     }
 
-    let answer = calc::vec_to_num(answer.into_iter()
+    let answer = calc::vec_to_num(&answer.into_iter()
         .skip_while(|&n| n == 0)
         .take(10)
-        .map(|n| n as u64)
+        .map(u64::from)
         .collect::<Vec<_>>());
 
-    assert_eq!(answer, 5537376230);
+    assert_eq!(answer, 5_537_376_230);
     Some(answer)
 }
 
@@ -439,7 +439,7 @@ pub fn p014a() -> Option<u64> {
         }
     }
 
-    assert_eq!(answer_n, 837799);
+    assert_eq!(answer_n, 837_799);
     Some(answer_n as u64)
 }
 
@@ -460,8 +460,8 @@ pub fn p014b() -> Option<u64> {
         }
     }
 
-    assert_eq!(answer_n, 837799);
-    Some(answer_n as u64)
+    assert_eq!(answer_n, 837_799);
+    Some(u64::from(answer_n))
 }
 
 pub fn p014c() -> Option<u64> {
@@ -480,7 +480,7 @@ pub fn p014c() -> Option<u64> {
         }
     }
 
-    assert_eq!(answer_n, 837799);
+    assert_eq!(answer_n, 837_799);
     Some(answer_n as u64)
 }
 
@@ -501,6 +501,6 @@ pub fn p014d() -> Option<u64> {
         }
     }
 
-    assert_eq!(answer_n, 837799);
+    assert_eq!(answer_n, 837_799);
     Some(answer_n as u64)
 }

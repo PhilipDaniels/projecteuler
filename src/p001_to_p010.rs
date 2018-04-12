@@ -2,13 +2,14 @@ use utils::*;
 use fibonacci::FibonacciIterator;
 use prime::*;
 use calc;
+use std::convert::From;
 
 pub fn p001() -> Option<u64> {
     let answer = (0..1000)
         .filter(|&x| x % 3 == 0 || x % 5 == 0)
         .sum();
 
-    assert_eq!(answer, 233168);
+    assert_eq!(answer, 233_168);
     Some(answer)
 }
 
@@ -18,7 +19,7 @@ pub fn p002() -> Option<u64> {
         .take_while(|&x| x < 4_000_000)
         .sum::<u64>();
 
-    assert_eq!(answer, 4613732);
+    assert_eq!(answer, 4_613_732);
     Some(answer)
 }
 
@@ -57,7 +58,7 @@ pub fn p004() -> Option<u64> {
         }
     }
 
-    assert_eq!(answer, 906609);
+    assert_eq!(answer, 906_609);
     Some(answer)
 }
 
@@ -91,7 +92,7 @@ fn p005a() -> Option<u64> {
     }
 
     let answer = n;
-    assert_eq!(answer, 232792560);
+    assert_eq!(answer, 232_792_560);
     Some(answer)
 }
 
@@ -119,7 +120,7 @@ fn p005b() -> Option<u64> {
     }
 
     let answer = n;
-    assert_eq!(answer, 232792560);
+    assert_eq!(answer, 232_792_560);
     Some(answer)
 
     // TODO: There are still faster ways of computing this.
@@ -131,14 +132,14 @@ pub fn p006() -> Option<u64> {
     let sum_squares: u64 = (1..101).map(|x| x * x).sum();
     let square_sum = 5050 * 5050;
     let answer = square_sum - sum_squares;
-    assert_eq!(answer, 25164150);
+    assert_eq!(answer, 25_164_150);
     Some(answer)
 }
 
 pub fn p007() -> Option<u64> {
-    let answer = PrimeIterator::new().skip(10000).next().unwrap();
+    let answer = PrimeIterator::new().nth(10000).unwrap();
 
-    assert_eq!(answer, 104743);
+    assert_eq!(answer, 104_743);
     Some(answer)
 }
 
@@ -174,14 +175,14 @@ fn p008a() -> Option<u64> {
 05886116467109405077541002256983155200055935729725\
 71636269561882670428252483600823257530420752963450"
         .chars()
-        .map(|c| c.to_digit(10).unwrap() as u64)
+        .map(|c| u64::from(c.to_digit(10).unwrap()))
         .collect::<Vec<_>>()
         .windows(13)
         .map(|window| window.iter().product::<u64>())
         .max()
         .unwrap();
 
-    assert_eq!(answer, 23514624000);
+    assert_eq!(answer, 23_514_624_000);
     Some(answer)
 }
 
@@ -209,12 +210,12 @@ fn p008b() -> Option<u64> {
 05886116467109405077541002256983155200055935729725\
 71636269561882670428252483600823257530420752963450"
         // A zero in will produce a zero out, so eliminate all windows that have zeros.
-        .split("0")
+        .split('0')
         // Resultant sub-sequences must be at least 13 characters long.
         .filter(|&seq| seq.len() >= 13)
         // Turn those sub-sequences from a `&str` into a `Vec<u64>`. The output of this stage
         // is a sequence of vectors.
-        .map(|seq| seq.chars().map(|c| c.to_digit(10).unwrap() as u64).collect::<Vec<u64>>())
+        .map(|seq| seq.chars().map(|c| u64::from(c.to_digit(10).unwrap())).collect::<Vec<u64>>())
         // For each item (Vec<u64>) in the sequence, chop it into windows of 13 elements,
         // multiply them, and then find the max.
         .map(|v| v.windows(13).map(|window| window.iter().product::<u64>()).max().unwrap())
@@ -222,7 +223,7 @@ fn p008b() -> Option<u64> {
         .max()
         .unwrap();
 
-    assert_eq!(answer, 23514624000);
+    assert_eq!(answer, 23_514_624_000);
     Some(answer)
 }
 
@@ -250,14 +251,14 @@ fn p008c() -> Option<u64> {
 05886116467109405077541002256983155200055935729725\
 71636269561882670428252483600823257530420752963450"
         // A zero in will produce a zero out, so eliminate all windows that have zeros.
-        .split("0")
+        .split('0')
         // Resultant sub-sequences must be at least 13 characters long.
         .filter(|&seq| seq.len() >= 13)
         // Turn those sub-sequences from a `&str` into a `Vec<u64>`, then iterate over the
         // windows in each vector and find the max product.
         .map(|seq|
             seq.chars()
-                .map(|c| c.to_digit(10).unwrap() as u64)
+                .map(|c| u64::from(c.to_digit(10).unwrap()))
                 .collect::<Vec<u64>>()
                 .windows(13)
                 .map(|window| window.iter().product::<u64>())
@@ -268,7 +269,7 @@ fn p008c() -> Option<u64> {
         .max()
         .unwrap();
 
-    assert_eq!(answer, 23514624000);
+    assert_eq!(answer, 23_514_624_000);
     Some(answer)
 }
 
@@ -282,16 +283,14 @@ pub fn p009() -> Option<u64> {
     for a in 1..1001 {
         for b in a + 1..1001 {
             for c in b + 1..1001 {
-                if (a*a) + (b*b) == c*c {
-                    if a + b + c == 1000 {
-                        answer = a * b * c;
-                    }
+                if (a*a) + (b*b) == c*c && a + b + c == 1000 {
+                    answer = a * b * c;
                 }
             }
         }
     }
 
-    assert_eq!(answer, 31875000);
+    assert_eq!(answer, 31_875_000);
     Some(answer)
 }
 
@@ -301,6 +300,6 @@ pub fn p010() -> Option<u64> {
         .take_while(|&p| p < 2_000_000)
         .sum();
 
-    assert_eq!(answer, 142913828922);
+    assert_eq!(answer, 142_913_828_922);
     Some(answer)
 }

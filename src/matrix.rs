@@ -56,7 +56,7 @@ impl<T> FromStr for Matrix<T>
         // TODO: Improve this mess. Use a custom error type? Allocate less.
         for line in s.lines() {
             let mut row = Vec::new();
-            for s in line.split(" ").collect::<Vec<_>>() {
+            for s in line.split(' ').collect::<Vec<_>>() {
                 match s.parse::<T>() {
                     Ok(v) => row.push(v),
                     Err(_) => return Err(format!("Error, cannot convert {} to a number", s))

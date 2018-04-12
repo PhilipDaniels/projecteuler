@@ -58,7 +58,7 @@ pub fn divisors(n: u64) -> Vec<u64> {
 
 #[inline]
 pub fn num_divisors(n: u64) -> u64 {
-    println!("num_divisors for n = {}", n);
+    //println!("num_divisors for n = {}", n);
     let ub = sqrt_upper_bound(n);
     let primes = PrimeIterator::new().take_while(|&p| p <= ub).collect::<Vec<_>>();
     let mut divisors = Vec::<u64>::new();
@@ -72,21 +72,21 @@ pub fn num_divisors(n: u64) -> u64 {
 
     // Find all the prime factors.
     // Check each prime number 2..ub to see if it divides into n.
-    for &p in primes.iter() {
+    for &p in &primes {
         let mut x = n;
         let mut exponent = 1;
 
         let remainder = n % p;
         if remainder == 0 {
             // It does. We add it to the list, also we add the dividend.
-            println!("    Pushing {}", p);
+            //println!("    Pushing {}", p);
             divisors.push(p);
             //divisors.push(n / p);  // This fails for n =2, results in divisors = [1,1,2]
         }
     }
 
     divisors.sort();
-    println!("    n = {}, ub = {}, primes = {:?}, divisors = {:?}, divisors.len() = {}", n, ub, primes, divisors, divisors.len());
+    //println!("    n = {}, ub = {}, primes = {:?}, divisors = {:?}, divisors.len() = {}", n, ub, primes, divisors, divisors.len());
 
     divisors.len() as u64
 }
@@ -95,11 +95,10 @@ pub fn num_divisors(n: u64) -> u64 {
 ///
 ///     assert_eq!(vec_to_num(vec![1, 2, 3, 0]), 1230);
 ///
-pub fn vec_to_num(v: Vec<u64>) -> u64 {
+pub fn vec_to_num(v: &[u64]) -> u64 {
     let mut num = 0;
     let len = v.len();
-    for i in 0..len {
-        let digit = v[i];
+    for (i, digit) in v.iter().enumerate() {
         let power = (len - 1 - i) as u32;
         num += digit * 10_u64.pow(power);
     }
@@ -214,12 +213,12 @@ impl KnownCollatzes {
     pub fn get(&self, n: usize) -> Option<usize> {
         if n < self.low.len() {
             if self.low[n] == 0 {
-                return None;
+                None
             } else {
-                return Some(self.low[n]);
+                Some(self.low[n])
             }
         } else {
-            return match self.high.get(&n) {
+            match self.high.get(&n) {
                 Some(&clen) => Some(clen),
                 None => None
             }
@@ -395,12 +394,12 @@ mod tests {
 
     #[test]
     fn vec_to_num_works() {
-        assert_eq!(vec_to_num(vec![0]), 0);
-        assert_eq!(vec_to_num(vec![1]), 1);
-        assert_eq!(vec_to_num(vec![9]), 9);
-        assert_eq!(vec_to_num(vec![1, 0]), 10);
-        assert_eq!(vec_to_num(vec![1, 2, 3, 0]), 1230);
-        assert_eq!(vec_to_num(vec![5, 5, 3, 7, 3, 7, 6, 2, 3, 0]), 5537376230);
+        assert_eq!(vec_to_num(&vec![0]), 0);
+        assert_eq!(vec_to_num(&vec![1]), 1);
+        assert_eq!(vec_to_num(&vec![9]), 9);
+        assert_eq!(vec_to_num(&vec![1, 0]), 10);
+        assert_eq!(vec_to_num(&vec![1, 2, 3, 0]), 1230);
+        assert_eq!(vec_to_num(&vec![5, 5, 3, 7, 3, 7, 6, 2, 3, 0]), 5537376230);
     }
 
     #[test]
