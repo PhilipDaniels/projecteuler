@@ -185,6 +185,27 @@ impl KnownCollatzes {
                         high: HashMap::new()
                     };
         kc.low[1] = 1;
+
+        /*
+        // Quick initialization. 2*2, 2*2*2, 2*2*2*2,
+        //                       3*2, 3*2*2, 3*2*2*2
+        //                       p*2, p*2*2, p*2*2*2 has no overlaps
+        // But this produces no measurable speedup :-)
+        let primes = PrimeIterator::new().take_while(|&n| n < 100);
+
+        for p in primes {
+            let p = p as usize;
+            //println!("p = {}", p);
+            let mut clen = collatz_len2(p, &mut kc);
+            let mut n = p;
+            while n < kc.low.len() {
+                kc.low[n] = clen as usize;
+                n *= 2;
+                clen += 1;
+            }
+        }
+        */
+
         kc
     }
 

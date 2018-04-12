@@ -418,12 +418,31 @@ pub fn p013() -> Option<u64> {
 }
 
 pub fn p014() -> Option<u64> {
-    sub_execute(14, "a", p014a);
-    sub_execute(14, "b", p014b);
+    sub_execute(14, "a (brute force)  ", p014a);
+    sub_execute(14, "b (hashmap cache)", p014b);
+    sub_execute(14, "c (struct cache) ", p014c);
     None
 }
 
 pub fn p014a() -> Option<u64> {
+    let mut answer_len = 0;
+    let mut answer_n = 0;
+
+    for n in 2..1_000_000 {
+        let clen = calc::collatz_len_simple(n);
+
+        if clen > answer_len {
+            answer_len = clen;
+            answer_n = n;
+            //println!("answer_n = {}, answer_len = {}", answer_n, answer_len);
+        }
+    }
+
+    assert_eq!(answer_n, 837799);
+    Some(answer_n as u64)
+}
+
+pub fn p014b() -> Option<u64> {
     let mut known_collatzes = HashMap::<u32, u32>::new();
     known_collatzes.insert(1, 1);
 
@@ -444,12 +463,14 @@ pub fn p014a() -> Option<u64> {
     Some(answer_n as u64)
 }
 
-pub fn p014b() -> Option<u64> {
+pub fn p014c() -> Option<u64> {
+    let mut known_collatzes = calc::KnownCollatzes::new();
+
     let mut answer_len = 0;
     let mut answer_n = 0;
 
     for n in 2..1_000_000 {
-        let clen = calc::collatz_len_simple(n);
+        let clen = calc::collatz_len2(n, &mut known_collatzes);
 
         if clen > answer_len {
             answer_len = clen;
@@ -461,4 +482,3 @@ pub fn p014b() -> Option<u64> {
     assert_eq!(answer_n, 837799);
     Some(answer_n as u64)
 }
-
